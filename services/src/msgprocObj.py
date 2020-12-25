@@ -5,11 +5,16 @@ import datetime
 import pytz
 from mainObjBase import mainObjBaseClass
 import constants
-import ConnectorTypes
-import Store
 import threading
+import json
+import mq_client_abstraction
+
 #import MessageProcessors
 #from IncommingConnectionScheduleManager import IncommingConnectionsScheduleManagerClass
+
+InvalidMqClientConfigInvalidJSONException = constants.customExceptionClass('APIAPP_MQCLIENTCONFIG value is not valid JSON')
+InvalidListenDestListException = constants.customExceptionClass('APIAPP_LISTENDESTLIST value is not valid JSON')
+
 
 class ThreadSafeMessageToProcess():
   lock=None
@@ -72,8 +77,10 @@ class ThreadSafeMessageToProcess():
 class msgProcObjClass(mainObjBaseClass):
   APIAPP_VERSION = None
   schedular = None
+  mqClient = None
 
   msgToBeProcessed = None
+  destinationsSubscribedTo = None #Subscriptions this instance should make (read form args)
 
   class ServerTerminationError(Exception):
     def __init__(self):
@@ -91,13 +98,48 @@ class msgProcObjClass(mainObjBaseClass):
     print("eventStatAggregator -> Message Processor")
     print("APIAPP_VERSION", self.APIAPP_VERSION)
 
+    mqClientConfigJSON = readFromEnviroment(env, 'APIAPP_MQCLIENTCONFIG', '{}', None)
+    mqClientConfigDict = None
+    try:
+      if mqClientConfigJSON != '{}':
+        mqClientConfigDict = json.loads(mqClientConfigJSON)
+    except Exception as err:
+      print(err) # for the repr
+      print(str(err)) # for just the message
+      print(err.args) # the arguments that the exception has been called with.
+      raise(InvalidMqClientConfigInvalidJSONException)
+
+    self.mqClient = mq_client_abstraction.createMQClientInstance(configDict=mqClientConfigDict)
+
+    listenGuestListJSON = readFromEnviroment(env, 'APIAPP_LISTENDESTLIST', '[]', None)
+    listenGuestList = None
+    try:
+      if listenGuestListJSON != '[]':
+        listenGuestList = json.loads(listenGuestListJSON)
+    except Exception as err:
+      print(err) # for the repr
+      print(str(err)) # for just the message
+      print(err.args) # the arguments that the exception has been called with.
+      raise(InvalidListenDestListException)
+
+    if listenGuestList is None:
+      raise Exception("Must set environemnt variable APIAPP_LISTENDESTLIST")
+
+    if not isinstance(listenGuestList, list):
+      raise Exception("APIAPP_LISTENDESTLIST is not a list")
+    if len(listenGuestList) == 0:
+      raise Exception("APIAPP_LISTENDESTLIST must have at least one item")
+
+
+    self.destinationsSubscribedTo = []
+    for dest in listenGuestList:
+      self.destinationsSubscribedTo.append(dest)
+
+
     if (self.isInitOnce):
       return
     self.isInitOnce = True
     self.initOnce()
-
-    if len(args)<2:
-      raise Exception("Command line args must include at least one destination to subscribe to")
 
   def initOnce(self):
 
@@ -117,28 +159,12 @@ class msgProcObjClass(mainObjBaseClass):
     while self.msgToBeProcessed.isInProgress():
       time.sleep(0.5)
 
-  def LocalMessageProcessorFunction_inboundConnectorExecutions(self, destination, body, outputFn=print):
-    def dbfn(storeConnection):
-      ConnectorTypes.MessageProcessorFunction(
-        destination=destination,
-        body=body,
-        commonAppObj=self,
-        outputFn=outputFn,
-        connectorLogic=self.connectorLogic,
-        storeConnection=storeConnection,
-        linkvisAPIClientInstance=self.linkvisAPIClientInstance,
-        userManagementAPIClientInstance=self.userManagementAPIClientInstance
-      )
-    self.objectStore.executeInsideTransaction(dbfn)
-
-  def LocalMessageProcessorFunction_notifyConnectorGraphDeleted(self, destination, body, outputFn=print):
-    print("Recieved " + destination + ":" + body + " TODO handle")
-
-
   def LocalMessageProcessorFunction(self, destination, body, outputFn=print):
     if destination not in self.destinationsSubscribedTo:
+      # should never reach here
       raise Exception("Not subscribed to " + destination)
-    self.destinationsSubscribedTo[destination](msgprocObj=self, destination=destination, body=body, outputFn=outputFn)
+    # TODO Wrap message into DB context and run processing
+    raise Exception("Not implemented process message")
 
 
   def run(self):
@@ -146,7 +172,7 @@ class msgProcObjClass(mainObjBaseClass):
       raise Exception('Trying to run app without initing')
 
     for x in self.destinationsSubscribedTo:
-      print("Subscribing to " + constants.destinationInboundConnector)
+      print("Subscribing to " + x)
       self.mqClient.subscribeToDestination(destination=x,msgRecieveFunction=self.LocalMessageProcessorFunctionCaller)
 
     try:

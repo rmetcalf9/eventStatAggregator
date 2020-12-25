@@ -32,10 +32,8 @@ env = {
   'APIAPP_FRONTENDURL': 'http://frontenddummytestxxx',
   'APIAPP_APIACCESSSECURITY': '[]',
   'APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN': httpOrigin + ', https://sillysite.com',
-  'APIAPP_LINKVISBASEURL': 'MOCK',
   'APIAPP_USERMANAGERCONFIG': '{ \"baseURL\": \"MOCK\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }',
   'APIAPP_MQCLIENTCONFIG': '{ \"Type\": \"Memory\" }',
-  'APIAPP_LINKVISCONNECTORCREDPASSWORD': 'ABC123',
   "APIAPP_JWTSKIPSIGNATURECHECK": "Y"
 }
 

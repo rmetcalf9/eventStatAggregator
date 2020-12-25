@@ -25,7 +25,6 @@ import sys
 invalidConfigurationException = constants.customExceptionClass('Invalid Configuration')
 
 InvalidObjectStoreConfigInvalidJSONException = constants.customExceptionClass('APIAPP_OBJECTSTORECONFIG value is not valid JSON')
-InvalidMqClientConfigInvalidJSONException = constants.customExceptionClass('APIAPP_MQCLIENTCONFIG value is not valid JSON')
 InvalidChartUserManagerConfigInvalidJSONException = constants.customExceptionClass('APIAPP_USERMANAGERCONFIG value is not valid JSON')
 class appObjClass(parAppObj, mainObjBaseClass):
   accessControlAllowOriginObj = None
