@@ -2,6 +2,8 @@
 
 appName="eventStatAggregator"
 
+DefaultHasAccountRole="hasaccount"
+SecurityEndpointAccessRole="securityTest"
 
 
 class customExceptionClass(Exception):
