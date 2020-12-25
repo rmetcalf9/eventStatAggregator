@@ -1,0 +1,16 @@
+flask==1.0.2
+flask_restplus==0.11.0
+werkzeug==0.15.4
+pytz==2019.3
+sortedcontainers==1.5.9
+baseapp_for_restapi_backend_with_swagger==0.5.19
+object_store_abstraction==0.3.39
+mq-client-abstraction==0.0.45
+pyjwt==1.7.1
+
+requests==2.20.1
+
+#The following are in prestage docker file
+cryptography==2.9.2
+scrapy==2.1.0
+PyQuery==1.4.1
