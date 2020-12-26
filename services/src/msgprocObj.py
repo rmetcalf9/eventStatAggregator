@@ -8,6 +8,7 @@ import constants
 import threading
 import json
 import mq_client_abstraction
+from SQLAlchemy import EventLogger
 
 #import MessageProcessors
 #from IncommingConnectionScheduleManager import IncommingConnectionsScheduleManagerClass
@@ -78,6 +79,7 @@ class msgProcObjClass(mainObjBaseClass):
   APIAPP_VERSION = None
   schedular = None
   mqClient = None
+  eventLogger=None
 
   msgToBeProcessed = None
   destinationsSubscribedTo = None #Subscriptions this instance should make (read form args)
@@ -97,6 +99,9 @@ class msgProcObjClass(mainObjBaseClass):
 
     print("eventStatAggregator -> Message Processor")
     print("APIAPP_VERSION", self.APIAPP_VERSION)
+
+    tz = readFromEnviroment(env=env, envVarName='APIAPP_TIMEZONE', defaultValue="Europe/London", acceptableValues=None, nullValueAllowed=False)
+    self.eventLogger = EventLogger(timezoneString=tz)
 
     mqClientConfigJSON = readFromEnviroment(env, 'APIAPP_MQCLIENTCONFIG', '{}', None)
     mqClientConfigDict = None
@@ -163,8 +168,9 @@ class msgProcObjClass(mainObjBaseClass):
     if destination not in self.destinationsSubscribedTo:
       # should never reach here
       raise Exception("Not subscribed to " + destination)
-    # TODO Wrap message into DB context and run processing
-    raise Exception("Not implemented process message")
+    def fn(transactionContext):
+      self.eventLogger.log(destination=destination, eventBody=body, transactionContext=transactionContext, outputFn=outputFn)
+    self.objectStore.executeInsideTransaction(fnToExecute=fn)
 
 
   def run(self):

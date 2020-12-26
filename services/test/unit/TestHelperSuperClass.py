@@ -28,3 +28,14 @@ class msgProcTestBaseClass(unittest.TestCase):
 
   def tearDown(self):
     pass
+
+def AssertMagicMockCalls(testClassInstance, mockObj, calls):
+  mockObj.assert_has_calls(calls, any_order=False)
+  if mockObj.call_count > len(calls):
+    print("More mock calls then expected in test")
+    print("*** Actual Mock Calls were")
+    # This code works in first example but dosen't smell right
+    #  as there may be mutiple calls.
+    print(mockObj.call_args)
+  testClassInstance.assertEqual(len(calls), mockObj.call_count, msg="Wrong number of calls")
+
