@@ -71,7 +71,7 @@ class SQLAlchemyConnectionFactory():
     #MySQL assumes 3 bytes per utf8 character. 255 characters is the maximum index size you can specify per column, because 256x3=768, which breaks the 767 byte limit.
     self.objDataTable = Table(self.objectPrefix + 'events', metadata,
       Column('id', Integer, primary_key=True),
-      Column('creationDate', DateTime(timezone=True)),
+      Column('creation_date', DateTime(timezone=True)),
       Column('event_name', String(255), index=True),
       Column('event_subname', String(255), index=True),
       Column('event_id', String(255), index=True),

@@ -6,8 +6,10 @@ from dateutil.parser import parse
 
 class EventLogger():
   tz = None
-  def __init__(self, timezoneString):
+  getCurDateTimeFn = None
+  def __init__(self, timezoneString, getCurDateTimeFn):
     self.tz = pytz.timezone(timezoneString)
+    self.getCurDateTimeFn = getCurDateTimeFn
     print("Events logged in timezone:", self.tz)
 
   def log(self, destination, eventBody, transactionContext, outputFn):
@@ -33,6 +35,34 @@ class EventLogger():
       outputFn("Received(" + destination + ") Invalid timestamp format")
       return
 
+    dtInLocalTimeZone = dt.astimezone(self.tz)
 
-    raise Exception("NI")
+    print("dt=", dtInLocalTimeZone)
+    print("dtInLocalTimeZone", dtInLocalTimeZone)
 
+    id = str(uuid.uuid4())
+    event_name = eventBodyDict["name"]
+    event_subname = eventBodyDict["subname"]
+    event_id = eventBodyDict["id"]
+    dom = dtInLocalTimeZone.day
+    month = dtInLocalTimeZone.month
+    year = dtInLocalTimeZone.year
+    event_date = dtInLocalTimeZone
+
+    curTime = self.getCurDateTimeFn()
+    query = transactionContext.mainFactory.objDataTable.insert().values(
+      creation_date=curTime,
+      event_name=event_name,
+      event_subname=event_subname,
+      event_id=event_id,
+      dom=dom,
+      month=month,
+      year=year,
+      event_date=event_date
+    )
+
+    result = transactionContext._INT_execute(query)
+    if len(result.inserted_primary_key) != 1:
+      raise Exception('Event Logger failed - wrong number of rows inserted')
+
+    outputFn("Received(" + destination + ") " + event_name + ":" + event_subname + " OK")

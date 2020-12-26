@@ -101,7 +101,7 @@ class msgProcObjClass(mainObjBaseClass):
     print("APIAPP_VERSION", self.APIAPP_VERSION)
 
     tz = readFromEnviroment(env=env, envVarName='APIAPP_TIMEZONE', defaultValue="Europe/London", acceptableValues=None, nullValueAllowed=False)
-    self.eventLogger = EventLogger(timezoneString=tz)
+    self.eventLogger = EventLogger(timezoneString=tz, getCurDateTimeFn=self.getCurDateTime)
 
     mqClientConfigJSON = readFromEnviroment(env, 'APIAPP_MQCLIENTCONFIG', '{}', None)
     mqClientConfigDict = None

@@ -59,10 +59,12 @@ class ConnectionContext(ConnectionContextBase):
     self.transaction = self.connection.begin()
 
   #Internal function for executing a statement
-  ## only called from this file
   def _INT_execute(self, statement):
     if self.transaction is None:
       raise MissingTransactionContextException
+    return self.connection.execute(statement.execution_options(autocommit=False))
+
+  def _INT_executeQuery(self, statement):
     return self.connection.execute(statement.execution_options(autocommit=False))
 
   def _commitTransaction(self):
