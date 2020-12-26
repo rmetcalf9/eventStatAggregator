@@ -1,5 +1,4 @@
 from baseapp_for_restapi_backend_with_swagger import readFromEnviroment
-from object_store_abstraction import createObjectStoreInstance
 from SQLAlchemy import SQLAlchemyConnectionFactory
 import json
 import constants
