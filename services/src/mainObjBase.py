@@ -1,8 +1,11 @@
 from baseapp_for_restapi_backend_with_swagger import readFromEnviroment
 from object_store_abstraction import createObjectStoreInstance
+from SQLAlchemy import SQLAlchemyConnectionFactory
 import json
+import constants
 
 # This file hosts shared configuration for the main objects
+InvalidObjectStoreConfigInvalidJSONException = constants.customExceptionClass('APIAPP_OBJECTSTORECONFIG value is not valid JSON')
 
 class mainObjBaseClass():
   objectStore = None
@@ -34,7 +37,8 @@ class mainObjBaseClass():
     fns = {
       'getCurDateTime': self.getCurDateTime
     }
-    self.objectStore = createObjectStoreInstance(
+
+    self.objectStore = SQLAlchemyConnectionFactory(
       objectStoreConfigDict,
       fns,
       detailLogging=(self.APIAPP_OBJECTSTOREDETAILLOGGING=='Y')

@@ -2,6 +2,7 @@ import unittest
 from msgprocObj import msgprocObj
 import pytz
 import datetime
+import TestingHelper
 
 from nose.plugins.attrib import attr
 def wipd(f):
@@ -11,7 +12,8 @@ testQueue001 = '/queue/testQueue'
 
 env = {
   'APIAPP_VERSION': 'TESTMSGPROC-3.3.3',
-  'APIAPP_LISTENDESTLIST': '["' + testQueue001 + '"]'
+  'APIAPP_LISTENDESTLIST': '["' + testQueue001 + '"]',
+  'APIAPP_OBJECTSTORECONFIG': TestingHelper.Constants.memoryStoreConfigString
 }
 
 class msgProcTestBaseClass(unittest.TestCase):

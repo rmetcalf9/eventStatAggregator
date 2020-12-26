@@ -8,6 +8,10 @@ object_store_abstraction==0.3.39
 mq-client-abstraction==0.0.45
 pyjwt==1.7.1
 
+sqlalchemy==1.3.1
+PyMySQL==0.9.3
+
+
 requests==2.20.1
 
 #The following are in prestage docker file

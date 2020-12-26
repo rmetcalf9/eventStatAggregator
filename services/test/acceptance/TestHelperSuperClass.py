@@ -8,6 +8,7 @@ from unittest.mock import patch
 import copy
 import uuid
 from SessionMock import SessionMock
+import TestingHelper
 
 import logging
 
@@ -34,7 +35,8 @@ env = {
   'APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN': httpOrigin + ', https://sillysite.com',
   'APIAPP_USERMANAGERCONFIG': '{ \"baseURL\": \"MOCK\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }',
   'APIAPP_MQCLIENTCONFIG': '{ \"Type\": \"Memory\" }',
-  "APIAPP_JWTSKIPSIGNATURECHECK": "Y"
+  "APIAPP_JWTSKIPSIGNATURECHECK": "Y",
+  'APIAPP_OBJECTSTORECONFIG': TestingHelper.Constants.memoryStoreConfigString
 }
 
 
