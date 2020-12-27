@@ -49,9 +49,8 @@ docker service create --name ${RJM_RUNNING_SERVICE_NAME} \
 -e APIAPP_APIDOCSURL=${EXTURL}:${EXTPORT80}/public/web/apidocs \
 -e APIAPP_FRONTENDURL=${EXTURL}:${EXTPORT80}/public/web/frontend \
 -e APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN="http://localhost" \
--e APIAPP_OBJECTSTORECONFIG="{\"Type\": \"SimpleFileStore\",\"BaseLocation\": \"/ext_volume/services/objectstoredata\"}" \
+-e APIAPP_OBJECTSTORECONFIG="{\"Type\": \"SQLAlchemy\",\"connectionString\": \"sqlite:///ext_volume/services/objectstoredata/mainfile.db\", \"create_engine_args\": {\"poolclass\": \"StaticPool\", \"connect_args\": {\"check_same_thread\":false}}}" \
 -e APIAPP_USERMANAGERCONFIG="{ \"baseURL\": \"MOCK\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }" \
---publish 80:80 \
 ${RJM_IMAGE_TO_RUN}
 RES=$?
 if [ ${RES} -ne 0 ]; then
@@ -59,6 +58,9 @@ if [ ${RES} -ne 0 ]; then
   echo ""
   exit 1
 fi
+
+##--publish 80:80 \
+
 
 echo "Complete"
 echo "Start from http://127.0.0.1/public/web/frontend/#/"
