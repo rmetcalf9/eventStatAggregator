@@ -20,7 +20,7 @@ class SQLAlchemyConnectionFactory():
       raise Exception("Type not in store configuration")
 
     if ConfigDict["Type"] != "SQLAlchemy":
-      raise Exception("Type not SQLAlchemy - Uses same format config as objectstore but only implemented in SQLAlchemy")
+      raise Exception("Type not SQLAlchemy - Uses same format config as objectstore but only SQLAlchemy is implemented")
 
 
     if detailLogging:
