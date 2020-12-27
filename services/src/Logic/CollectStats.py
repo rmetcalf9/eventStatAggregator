@@ -26,11 +26,10 @@ def collectStats(tenant, name, subname, start, end, queryContext):
     queryContext.mainFactory.objDataTable.c.dom
   )
 
-  # select event_name, year, month, day, count('x')
-  # from tbl
-  # where tenant=tenant
-  # and startDAY>=XX
-  # and endDAY<=YY
-  # group by name, year, month, day
+  dailyResultList = []
 
-  pass
+  retVal = {
+    "daily": dailyResultList
+  }
+
+  return retVal, 200

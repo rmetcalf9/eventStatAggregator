@@ -46,12 +46,8 @@ class test_statsA(helpers):
     )
 
     expectedRes = {
-      'Server': {
-        'APIAPP_APIDOCSURL': '_',
-        'Version': 'TEST-3.3.3',
-        'APIAPP_FRONTENDURL': TestHelperSuperClass.env['APIAPP_FRONTENDURL']
-      },
-      'Derived': None
+      "daily": [
+      ]
     }
 
     python_Testing_Utilities.assertObjectsEqual(

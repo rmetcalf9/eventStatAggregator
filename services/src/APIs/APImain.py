@@ -10,7 +10,13 @@ def getStatsEndpointModel(appObj):
   })
 
 def getStatsResultModel(appObj):
+  dailyResultModel = appObj.flastRestPlusAPIObject.model('dailyResultModel', {
+    'daynum': fields.Integer(default=None, description='Sortable day number'),
+    'date': fields.String(default='DEFAULT', description='Date in form YYYYMMDD'),
+    'count': fields.Integer(default=None, description='Event count for this day')
+  })
   return appObj.flastRestPlusAPIObject.model('statsResultModel', {
+    'daily': fields.List(fields.Nested(dailyResultModel))
   })
 
 def requiredInPayload(content, fieldList):
