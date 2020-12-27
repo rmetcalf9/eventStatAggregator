@@ -5,7 +5,7 @@
 #working directory is always saas_linkvis root
 GITROOT=$(pwd)
 DOCKER_USERNAME=metcarob
-DOCKER_IMAGENAME=eventStatAggregator
+DOCKER_IMAGENAME=eventstataggregator
 VERSIONNUM=$(cat ./VERSION)
 
 docker image inspect ${DOCKER_USERNAME}/${DOCKER_IMAGENAME}:${VERSIONNUM}_localbuild > /dev/null

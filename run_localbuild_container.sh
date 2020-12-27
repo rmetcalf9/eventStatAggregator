@@ -8,8 +8,8 @@ if [[ ! -f ./VERSION ]]; then
 fi
 export RJM_VERSION=$(cat ./VERSION)
 export RJM_VERSION_UNDERSCORE=$(echo ${RJM_VERSION} | tr '.' '_')
-export RJM_IMAGE_TO_RUN=metcarob/eventStatAggregator:${RJM_VERSION}_localbuild
-export RJM_RUNNING_SERVICE_NAME=eventStatAggregator${RJM_VERSION_UNDERSCORE}_localbuild
+export RJM_IMAGE_TO_RUN=metcarob/eventstataggregator:${RJM_VERSION}_localbuild
+export RJM_RUNNING_SERVICE_NAME=eventstataggregator${RJM_VERSION_UNDERSCORE}_localbuild
 
 echo "Launching image ${RJM_IMAGE_TO_RUN}"
 
