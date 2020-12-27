@@ -16,5 +16,5 @@ id - ID of event (passed in)
 name - Name of event (Such as "ChallengeCompleted")
 subname - Subname of event (Such as an id of a particular challenge)
 timestamp - timestamp of event
-  
-
+ 
+ Each queue is assigned a single tenant.
