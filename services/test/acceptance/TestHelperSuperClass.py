@@ -26,16 +26,13 @@ mainAPIPrefix = '/api/public/main'
 
 env = {
   'APIAPP_MODE': 'DOCKER',
-  'APIAPP_JWTSECRET': 'DOsaddsaCKER',
   'APIAPP_VERSION': 'TEST-3.3.3',
   'APIAPP_FRONTEND': '_',
   'APIAPP_APIURL': 'http://apiurlxxx',
   'APIAPP_FRONTENDURL': 'http://frontenddummytestxxx',
   'APIAPP_APIACCESSSECURITY': '[]',
   'APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN': httpOrigin + ', https://sillysite.com',
-  'APIAPP_USERMANAGERCONFIG': '{ \"baseURL\": \"MOCK\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }',
   'APIAPP_MQCLIENTCONFIG': '{ \"Type\": \"Memory\" }',
-  "APIAPP_JWTSKIPSIGNATURECHECK": "Y",
   'APIAPP_OBJECTSTORECONFIG': TestingHelper.Constants.memoryStoreConfigString
 }
 

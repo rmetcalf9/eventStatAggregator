@@ -40,8 +40,6 @@ fi
 APP_DIR=.
 
 export APIAPP_MODE=DEVELOPER
-export APIAPP_JWTSECRET="gldskajld435sFFkfjlkfdsj" #Value also in insert_test_data.py
-export APIAPP_JWTSKIPSIGNATURECHECK=N
 export APIAPP_FRONTEND=_
 export APIAPP_APIURL=${EXTURL}:8097/api
 export APIAPP_APIDOCSURL=${EXTURL}:8097/apidocs

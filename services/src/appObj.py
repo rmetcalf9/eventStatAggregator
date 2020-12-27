@@ -27,7 +27,6 @@ from SQLAlchemy import EventLogger
 
 invalidConfigurationException = constants.customExceptionClass('Invalid Configuration')
 
-InvalidChartUserManagerConfigInvalidJSONException = constants.customExceptionClass('APIAPP_USERMANAGERCONFIG value is not valid JSON')
 class appObjClass(parAppObj, mainObjBaseClass):
   accessControlAllowOriginObj = None
 
@@ -47,11 +46,6 @@ class appObjClass(parAppObj, mainObjBaseClass):
       pass
 
     super(appObjClass, self).init(env, serverStartTime, testingMode, serverinfoapiprefix='public/info')
-
-    #This app always needs a JWT key
-    if self.APIAPP_JWTSECRET is None:
-      print("ERROR - APIAPP_JWTSECRET should always be set")
-      raise invalidConfigurationException
 
     self.mainObjBaseClass_init(env=env)
 
