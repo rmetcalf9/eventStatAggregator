@@ -37,8 +37,8 @@ class EventLogger():
 
     dtInLocalTimeZone = dt.astimezone(self.tz)
 
-    print("dt=", dtInLocalTimeZone)
-    print("dtInLocalTimeZone", dtInLocalTimeZone)
+    # print("dt=", dtInLocalTimeZone)
+    # print("dtInLocalTimeZone", dtInLocalTimeZone)
 
     id = str(uuid.uuid4())
     event_name = eventBodyDict["name"]

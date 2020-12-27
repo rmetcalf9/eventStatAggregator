@@ -2,11 +2,34 @@ from sqlalchemy import select, and_, func
 import datetime
 
 
-def collectStats(tenant, name, subname, start, end, queryContext):
-  if subname is not None:
-    raise Exception("Not implemented")
+def getStatement(tenant, name, subname, start, end, queryContext):
+  dayAfterEnd = end + datetime.timedelta(days=1)
 
-  stmt = select([
+  if subname is not None:
+    return select([
+      queryContext.mainFactory.objDataTable.c.year,
+      queryContext.mainFactory.objDataTable.c.month,
+      queryContext.mainFactory.objDataTable.c.dom,
+      func.count(queryContext.mainFactory.objDataTable.c.event_name)
+    ]
+      , whereclause=(
+        and_(
+          queryContext.mainFactory.objDataTable.c.tenant == tenant
+          , queryContext.mainFactory.objDataTable.c.event_name == name
+          , queryContext.mainFactory.objDataTable.c.event_subname == subname
+          , queryContext.mainFactory.objDataTable.c.event_date >= start
+          , queryContext.mainFactory.objDataTable.c.event_date <= dayAfterEnd
+        )
+      )
+    ).select_from(queryContext.mainFactory.objDataTable).group_by(
+      queryContext.mainFactory.objDataTable.c.event_name,
+      queryContext.mainFactory.objDataTable.c.event_subname,
+      queryContext.mainFactory.objDataTable.c.year,
+      queryContext.mainFactory.objDataTable.c.month,
+      queryContext.mainFactory.objDataTable.c.dom
+    )
+
+  return select([
     queryContext.mainFactory.objDataTable.c.year,
     queryContext.mainFactory.objDataTable.c.month,
     queryContext.mainFactory.objDataTable.c.dom,
@@ -16,7 +39,8 @@ def collectStats(tenant, name, subname, start, end, queryContext):
       and_(
         queryContext.mainFactory.objDataTable.c.tenant == tenant
         ,queryContext.mainFactory.objDataTable.c.event_name == name
-        #TODO ADD DATE RANGE CLAUSE HERE
+        ,queryContext.mainFactory.objDataTable.c.event_date >= start
+        , queryContext.mainFactory.objDataTable.c.event_date <= dayAfterEnd
       )
     )
   ).select_from(queryContext.mainFactory.objDataTable).group_by(
@@ -26,12 +50,8 @@ def collectStats(tenant, name, subname, start, end, queryContext):
     queryContext.mainFactory.objDataTable.c.dom
   )
 
-  # stmt = select([
-  #   queryContext.mainFactory.objDataTable.c.event_name,
-  #   queryContext.mainFactory.objDataTable.c.year,
-  #   queryContext.mainFactory.objDataTable.c.month,
-  #   queryContext.mainFactory.objDataTable.c.dom
-  # ])
+def collectStats(tenant, name, subname, start, end, queryContext):
+  stmt = getStatement(tenant=tenant, name=name, subname=subname, start=start, end=end, queryContext=queryContext)
 
   result = queryContext._INT_executeQuery(stmt)
   resultDict = {}
@@ -50,7 +70,6 @@ def collectStats(tenant, name, subname, start, end, queryContext):
   while curDate <= end:
     count = 0
     curDay = str(curDate.year) + str(curDate.month) + str(curDate.day)
-    print("CURDATE", curDate, curDay)
     if curDay in resultDict:
       count = resultDict[curDay]
     seq += 1

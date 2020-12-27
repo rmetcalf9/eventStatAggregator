@@ -13,8 +13,7 @@ class helpers(TestHelperSuperClass.testClassWithHelpers):
   def _getEnvironment(self):
     return TestHelperSuperClass.env
 
-
-  def getStatsA(self, tenant, name, start, end, msg="", checkAndParseResponse=True):
+  def getStatsB(self, tenant, name, subname, start, end, msg="", checkAndParseResponse=True):
     startUse = start
     endUse = end
     if startUse is None:
@@ -27,7 +26,7 @@ class helpers(TestHelperSuperClass.testClassWithHelpers):
     }
     result = self.assertMainAPIResult(
       methodFN=self.testClient.post,
-      url="/statsA/" + tenant + "/" + name,
+      url="/statsB/" + tenant + "/" + name + "/" + subname,
       session=None,
       data=postData
     )
@@ -37,13 +36,14 @@ class helpers(TestHelperSuperClass.testClassWithHelpers):
     return json.loads(result.get_data(as_text=True))
 
 
-class test_statsA(helpers):
+class test_statsB(helpers):
   def test_zeroStats(self):
     testTime = datetime.datetime.now(pytz.timezone("UTC"))
     #call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTime,
       end=testTime,
       checkAndParseResponse=True
@@ -63,14 +63,15 @@ class test_statsA(helpers):
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTime),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTime),
       outputFn=print
     )
 
     # call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTime,
       end=testTime,
       checkAndParseResponse=True
@@ -91,14 +92,15 @@ class test_statsA(helpers):
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay002),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay002),
       outputFn=print
     )
 
     # call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTimeDay001,
       end=testTimeDay003,
       checkAndParseResponse=True
@@ -121,26 +123,27 @@ class test_statsA(helpers):
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay001),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay001),
       outputFn=print
     )
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay002),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay002),
       outputFn=print
     )
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay003),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay003),
       outputFn=print
     )
 
     # call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTimeDay001,
       end=testTimeDay003,
       checkAndParseResponse=True
@@ -163,28 +166,29 @@ class test_statsA(helpers):
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay001),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay001),
       outputFn=print
     )
     for c in range(0,2):
       appObj.testSendEvent(
         tenant=TestingHelper.testingTenant,
         destination="TESTDESTINATION",
-        eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay002),
+        eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay002),
         outputFn=print
       )
     for c in range(0,3):
       appObj.testSendEvent(
         tenant=TestingHelper.testingTenant,
         destination="TESTDESTINATION",
-        eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay003),
+        eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay003),
         outputFn=print
       )
 
     # call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTimeDay001,
       end=testTimeDay003,
       checkAndParseResponse=True
@@ -199,38 +203,47 @@ class test_statsA(helpers):
     }
     self.assertStatsResultsMatch(expected=expectedRes, got=result)
 
-  def test_differentTenantAndNameIgnored(self):
+  def test_differentTenantAndNameAndSubnameIgnored(self):
     testTimeDay001 = datetime.datetime.now(pytz.timezone("UTC"))
     testTimeDay002 = testTimeDay001 + datetime.timedelta(days = 1)
     testTimeDay003 = testTimeDay002 + datetime.timedelta(days = 1)
+    testTimeDay004 = testTimeDay003 + datetime.timedelta(days = 1)
 
     appObj.testSendEvent(
       tenant=TestingHelper.testingTenant,
       destination="TESTDESTINATION",
-      eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay001),
+      eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay001),
       outputFn=print
     )
     for c in range(0,2):
       appObj.testSendEvent(
         tenant=TestingHelper.testingTenant + "2",
         destination="TESTDESTINATION",
-        eventBody=TestingHelper.generateSampleEvent(name="SomeName", testTime=testTimeDay002),
+        eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname", testTime=testTimeDay002),
         outputFn=print
       )
     for c in range(0,3):
       appObj.testSendEvent(
         tenant=TestingHelper.testingTenant,
         destination="TESTDESTINATION",
-        eventBody=TestingHelper.generateSampleEvent(name="SomeName" + "2", testTime=testTimeDay003),
+        eventBody=TestingHelper.generateSampleEvent(name="SomeName" + "2", subname="SomeSubname", testTime=testTimeDay003),
+        outputFn=print
+      )
+    for c in range(0,4):
+      appObj.testSendEvent(
+        tenant=TestingHelper.testingTenant,
+        destination="TESTDESTINATION",
+        eventBody=TestingHelper.generateSampleEvent(name="SomeName", subname="SomeSubname" + "2", testTime=testTimeDay004),
         outputFn=print
       )
 
     # call results as /api/public/info/serverinfo
-    result = self.getStatsA(
+    result = self.getStatsB(
       tenant=TestingHelper.testingTenant,
       name="SomeName",
+      subname="SomeSubname",
       start=testTimeDay001,
-      end=testTimeDay003,
+      end=testTimeDay004,
       checkAndParseResponse=True
     )
 
@@ -238,7 +251,8 @@ class test_statsA(helpers):
       "daily": [
         {"daynum": 1, "date": str(testTimeDay001.year) + str(testTimeDay001.month) + str(testTimeDay001.day), "count": 1},
         {"daynum": 2, "date": str(testTimeDay002.year) + str(testTimeDay002.month) + str(testTimeDay002.day), "count": 0},
-        {"daynum": 3, "date": str(testTimeDay003.year) + str(testTimeDay003.month) + str(testTimeDay003.day), "count": 0}
+        {"daynum": 3, "date": str(testTimeDay003.year) + str(testTimeDay003.month) + str(testTimeDay003.day), "count": 0},
+        {"daynum": 4, "date": str(testTimeDay004.year) + str(testTimeDay004.month) + str(testTimeDay004.day), "count": 0}
       ]
     }
     self.assertStatsResultsMatch(expected=expectedRes, got=result)

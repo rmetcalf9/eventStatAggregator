@@ -31,7 +31,7 @@ def requiredInPayload(content, fieldList):
 def registerAPI(appObj, APInamespace):
 
   @APInamespace.route('/statsA/<string:tenant>/<string:name>')
-  class statsName(Resource):
+  class statsA(Resource):
     '''stats'''
 
     @APInamespace.doc('Returns Stats')
@@ -65,5 +65,37 @@ def registerAPI(appObj, APInamespace):
       except Exception as err:
         raise err
 
-      return collectStats(tenant, name, subname, start, end, queryConnection)
+  @APInamespace.route('/statsB/<string:tenant>/<string:name>/<string:subname>')
+  class statsB(Resource):
+    '''stats'''
 
+    @APInamespace.doc('Returns Stats')
+    @APInamespace.expect(getStatsEndpointModel(appObj))
+    @appObj.flastRestPlusAPIObject.response(400, 'Validation error')
+    @appObj.flastRestPlusAPIObject.response(200, 'Success')
+    @appObj.flastRestPlusAPIObject.marshal_with(getStatsResultModel(appObj), code=200, description='Stats lookedup', skip_none=True)
+    @APInamespace.response(403, 'Forbidden - User does not have required role')
+    def post(self, tenant, name, subname):
+      '''Get Stats'''
+      content_raw = request.get_json()
+      content = marshal(content_raw, getStatsEndpointModel(appObj))
+      requiredInPayload(content, ['start', 'end'])
+
+      startdt = parse(content["start"])
+      startdt2 = startdt.astimezone(pytz.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+      enddt = parse(content["end"])
+      enddt2 = enddt.astimezone(pytz.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+
+      def dbfn(queryContext):
+        return Logic.collectStats(
+          tenant=tenant,
+          name=name,
+          subname=subname,
+          start=startdt2,
+          end=enddt2,
+          queryContext=queryContext
+        )
+      try:
+        return appObj.objectStore.executeInsideConnectionContext(dbfn)
+      except Exception as err:
+        raise err

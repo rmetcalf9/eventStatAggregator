@@ -99,3 +99,15 @@ class testClassWithHelpers(testClassWithTestClient):
     return self.assertAPIResult(methodFN, infoAPIPrefix + url, session, data)
   def assertMainAPIResult(self, methodFN, url, session, data):
     return self.assertAPIResult(methodFN, mainAPIPrefix + url, session, data)
+
+  def assertStatsResultsMatch(self, expected, got):
+    self.assertTrue("daily") in got
+    self.assertEqual(len(got["daily"]), len(expected["daily"]))
+    for c in range(0,len(expected["daily"])):
+      python_Testing_Utilities.assertObjectsEqual(
+        unittestTestCaseClass=self,
+        first=got["daily"][c],
+        second=expected["daily"][c],
+        msg="Returned stats wrong",
+        ignoredRootKeys=[]
+      )
