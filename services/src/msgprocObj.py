@@ -22,24 +22,39 @@ class ThreadSafeMessageToProcess():
   inProgress=None
   destination=None
   body=None
+  waitingToProcess=None
 
   def __init__(self):
     self.lock = threading.Lock()
+    self.waitingToProcess = False
     self.inProgress = False
     self.destination = None
     self.body = None
 
+  def readyForAnotherMessage(self):
+    retVal = True
+    self.lock.acquire(blocking=True, timeout=-1)
+    if self.waitingToProcess:
+      retVal = False
+    if self.inProgress:
+      retVal = False
+    self.lock.release()
+    return retVal
+
   def setMessageToProcess(self, destination, body):
     self.lock.acquire(blocking=True, timeout=-1)
-    if self.inProgress:
-      raise Exception("ERROR MESSAGE already in progress can't set")
-    if self.body is not None:
-      raise Exception("ERROR MESSAGE body not taken can't set")
-    if self.destination is not None:
-      raise Exception("ERROR MESSAGE destination not taken can't set")
-    self.destination = destination
-    self.body = body
-    self.lock.release()
+    try:
+      if self.inProgress:
+        raise Exception("ERROR MESSAGE already in progress can't set")
+      if self.body is not None:
+        raise Exception("ERROR MESSAGE body not taken can't set (Body is none)")
+      if self.destination is not None:
+        raise Exception("ERROR MESSAGE destination not taken can't set (Destination is None)")
+      self.destination = destination
+      self.body = body
+      self.waitingToProcess = True
+    finally:
+      self.lock.release()
 
   def startProcessing(self):
     self.lock.acquire(blocking=True, timeout=-1)
@@ -52,6 +67,7 @@ class ThreadSafeMessageToProcess():
       raise Exception("ERROR MESSAGE no destination can't start")
     retVal = (self.body, self.destination)
     self.inProgress = True
+    self.waitingToProcess = False
     self.lock.release()
     return retVal
 
@@ -145,6 +161,8 @@ class msgProcObjClass(mainObjBaseClass):
         raise Exception("APIAPP_LISTENDESTLIST invalid item - missing tenant")
       if "name" not in dest:
         raise Exception("APIAPP_LISTENDESTLIST invalid item - missing name")
+      if dest["name"] in self.destinationsSubscribedTo:
+        raise Exception("APIAPP_LISTENDESTLIST has same destination twice")
       self.destinationsSubscribedTo[dest["name"]] = dest["tenant"]
 
 
@@ -164,12 +182,17 @@ class msgProcObjClass(mainObjBaseClass):
     raise self.ServerTerminationError()
 
   def LocalMessageProcessorFunctionCaller(self, destination, body):
-    self.msgToBeProcessed.setMessageToProcess(destination=destination, body=body)
+    try:
+      self.msgToBeProcessed.setMessageToProcess(destination=destination, body=body)
+    except Exception as err:
+      print("ERROR PROCESSING RECIEVED MESSAGE - " + str(err))
+      return
     #sleep this thread until the main thread has completed processing
     # this prevents us from taking another message before this one is complete
     # required because scrapy will only run on main thread
-    while self.msgToBeProcessed.isInProgress():
-      time.sleep(0.5)
+    while not self.msgToBeProcessed.readyForAnotherMessage():
+      ## print("Sleeping")
+      time.sleep(0.05)
 
   def LocalMessageProcessorFunction(self, destination, body, outputFn=print):
     if destination not in self.destinationsSubscribedTo:

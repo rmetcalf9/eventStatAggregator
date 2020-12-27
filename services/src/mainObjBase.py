@@ -44,5 +44,6 @@ class mainObjBaseClass():
     )
 
   def mainObjBaseClass_exit_gracefully(self):
-    self.mqClient.close(wait=True)
+    ##self.mqClient.close(wait=True)
+    pass
 

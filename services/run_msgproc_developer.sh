@@ -31,7 +31,7 @@ export APIAPP_OBJECTSTORECONFIG="{\"Type\": \"SQLAlchemy\",\"connectionString\":
 export APIAPP_MQCLIENTCONFIG="{ \"Type\": \"Stomp\", \"ConnectionString\": \"stomp://127.0.0.1:61613\", \"Username\": \"admin\", \"Password\": \"admin\" }"
 export APIAPP_USERMANAGERCONFIG="{ \"baseURL\": \"http://127.0.0.1:8099\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }"
 
-export APIAPP_LISTENDESTLIST="[{\"tenant\":\"dev\", \"name\":\"/queue/testQueue\"}]"
+export APIAPP_LISTENDESTLIST="[{\"tenant\":\"dev\", \"name\":\"/queue/eventCountTestQueue001\"}, {\"tenant\":\"dev\", \"name\":\"/queue/eventCountTestQueue002\"},{\"tenant\":\"dev2\", \"name\":\"/queue/eventCountTestQueue003\"}, {\"tenant\":\"dev2\", \"name\":\"/queue/eventCountTestQueue004\"}]"
 
 export APIAPP_VERSION=
 if [ -f ${APP_DIR}/VERSION ]; then

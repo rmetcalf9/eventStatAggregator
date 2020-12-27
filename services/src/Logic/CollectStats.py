@@ -69,7 +69,7 @@ def collectStats(tenant, name, subname, start, end, queryContext):
   seq = 0
   while curDate <= end:
     count = 0
-    curDay = str(curDate.year) + str(curDate.month) + str(curDate.day)
+    curDay = "{:04d}".format(curDate.year) + "{:02d}".format(curDate.month) + "{:02d}".format(curDate.day)
     if curDay in resultDict:
       count = resultDict[curDay]
     seq += 1
