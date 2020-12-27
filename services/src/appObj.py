@@ -22,6 +22,9 @@ import json
 import logging
 import sys
 
+from SQLAlchemy import EventLogger
+
+
 invalidConfigurationException = constants.customExceptionClass('Invalid Configuration')
 
 InvalidChartUserManagerConfigInvalidJSONException = constants.customExceptionClass('APIAPP_USERMANAGERCONFIG value is not valid JSON')
@@ -68,5 +71,12 @@ class appObjClass(parAppObj, mainObjBaseClass):
     self.mainObjBaseClass_exit_gracefully()
     self.stopThread()
     super(appObjClass, self).exit_gracefully(signum, frame)
+
+  def testSendEvent(self, tenant, destination, eventBody, outputFn, timezoneString="Europe/London"):
+    # function used to inject events directly. Used only for testing in prod events are inserted via msgproc
+    eventLogger = EventLogger(timezoneString=timezoneString, getCurDateTimeFn=self.getCurDateTime)
+    def fn(transactionContext):
+      eventLogger.log(tenant=tenant, destination=destination, eventBody=json.dumps(eventBody), transactionContext=transactionContext, outputFn=outputFn)
+    self.objectStore.executeInsideTransaction(fnToExecute=fn)
 
 appObj = appObjClass()
