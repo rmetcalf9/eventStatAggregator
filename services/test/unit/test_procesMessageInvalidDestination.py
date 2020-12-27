@@ -6,6 +6,9 @@ import json
 import uuid
 import datetime
 import pytz
+from sqlalchemy import and_
+import TestingHelper
+
 
 def generateSampleEvent(testTime=datetime.datetime.now(pytz.timezone("UTC"))):
   return {
@@ -114,7 +117,12 @@ class test_proc_notifyConnector_GraphDeleted(helpers):
 
     def fn(queryContext):
       query = queryContext.mainFactory.objDataTable.select(whereclause=(
-        queryContext.mainFactory.objDataTable.c.event_id == sampleEvent["id"]
+        and_(
+          queryContext.mainFactory.objDataTable.c.tenant == TestingHelper.testingTenant,
+          queryContext.mainFactory.objDataTable.c.event_name == sampleEvent["name"],
+          queryContext.mainFactory.objDataTable.c.event_subname == sampleEvent["subname"],
+          queryContext.mainFactory.objDataTable.c.event_id == sampleEvent["id"]
+        )
       ))
       result = queryContext._INT_executeQuery(query)
       rowsReturned = 0
@@ -123,12 +131,13 @@ class test_proc_notifyConnector_GraphDeleted(helpers):
         print(row)
         #self.assertEqual(row[0], 1) ID in table
         ##self.assertEqual(row[1],testTime) #
-        self.assertEqual(row[2],sampleEvent["name"])
-        self.assertEqual(row[3],sampleEvent["subname"])
-        self.assertEqual(row[4],sampleEvent["id"]) # event_id
-        self.assertEqual(row[5],29) #day of month
-        self.assertEqual(row[6],9) # mon
-        self.assertEqual(row[7],2020) # year
+        self.assertEqual(row[2],TestingHelper.testingTenant)
+        self.assertEqual(row[3],sampleEvent["name"])
+        self.assertEqual(row[4],sampleEvent["subname"])
+        self.assertEqual(row[5],sampleEvent["id"]) # event_id
+        self.assertEqual(row[6],29) #day of month
+        self.assertEqual(row[7],9) # mon
+        self.assertEqual(row[8],2020) # year
         ##self.assertEqual(row[8],testTime) # event timestamp (TZ info not included in result)
       self.assertEqual(rowsReturned, 1)
 

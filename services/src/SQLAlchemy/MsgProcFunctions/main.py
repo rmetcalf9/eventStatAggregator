@@ -12,7 +12,7 @@ class EventLogger():
     self.getCurDateTimeFn = getCurDateTimeFn
     print("Events logged in timezone:", self.tz)
 
-  def log(self, destination, eventBody, transactionContext, outputFn):
+  def log(self, tenant, destination, eventBody, transactionContext, outputFn):
     eventBodyDict = None
     try:
       eventBodyDict = json.loads(eventBody)
@@ -52,6 +52,7 @@ class EventLogger():
     curTime = self.getCurDateTimeFn()
     query = transactionContext.mainFactory.objDataTable.insert().values(
       creation_date=curTime,
+      tenant=tenant,
       event_name=event_name,
       event_subname=event_subname,
       event_id=event_id,

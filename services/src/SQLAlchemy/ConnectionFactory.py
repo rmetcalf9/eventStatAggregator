@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey, BigInteger, DateTime, JSON, func, UniqueConstraint, and_, Text, select
+from sqlalchemy import create_engine, Index, Table, Column, Integer, String, MetaData, ForeignKey, BigInteger, DateTime, JSON, func, UniqueConstraint, and_, Text, select
 from sqlalchemy.pool import StaticPool
 
 from .ConnectionContext import ConnectionContext
@@ -72,6 +72,7 @@ class SQLAlchemyConnectionFactory():
     self.objDataTable = Table(self.objectPrefix + 'events', metadata,
       Column('id', Integer, primary_key=True),
       Column('creation_date', DateTime(timezone=True)),
+      Column('tenant', String(512), index=True),
       Column('event_name', String(255), index=True),
       Column('event_subname', String(255), index=True),
       Column('event_id', String(255), index=True),
@@ -81,6 +82,10 @@ class SQLAlchemyConnectionFactory():
       Column('event_date', DateTime(timezone=True)),
       UniqueConstraint('id', name=self.objectPrefix + '_objData_ix1')
     )
+    Index(self.objectPrefix + '_objData_ix2', self.objDataTable.c.tenant, self.objDataTable.c.event_name, self.objDataTable.c.event_subname, self.objDataTable.c.event_id)
+    Index(self.objectPrefix + '_objData_ix3', self.objDataTable.c.tenant, self.objDataTable.c.event_name, self.objDataTable.c.event_subname, self.objDataTable.c.year)
+    Index(self.objectPrefix + '_objData_ix4', self.objDataTable.c.tenant, self.objDataTable.c.event_name, self.objDataTable.c.event_subname, self.objDataTable.c.year, self.objDataTable.c.month)
+    Index(self.objectPrefix + '_objData_ix5', self.objDataTable.c.tenant, self.objDataTable.c.event_name, self.objDataTable.c.event_subname, self.objDataTable.c.year, self.objDataTable.c.dom)
     self.verTable = Table(self.objectPrefix + '_ver', metadata,
         Column('id', Integer, primary_key=True),
         Column('first_installed_ver', Integer),

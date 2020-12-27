@@ -1,2 +1,2 @@
 
-from .Constants import memoryStoreConfigString
+from .Constants import memoryStoreConfigString, testingTenant

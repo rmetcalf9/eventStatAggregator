@@ -5,6 +5,7 @@
 ```
 id - unique GUID assigned on insert
 creation_date - date the event hit the database
+tenant - each queue puts messages into a sintle tenant
 event_name - Name of event (Such as "ChallengeCompleted")
 event_subname - Subname of event (Such as an id of a particular challenge)
 event_id - ID of event (passed in)

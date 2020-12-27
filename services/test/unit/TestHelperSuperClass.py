@@ -9,10 +9,12 @@ def wipd(f):
   return attr('wip')(f)
 
 testQueue001 = '/queue/testQueue'
+def getQueueEnvString(qname):
+  return "{\"tenant\":\"" + TestingHelper.testingTenant + "\", \"name\":\"" + testQueue001 + "\"}"
 
 env = {
   'APIAPP_VERSION': 'TESTMSGPROC-3.3.3',
-  'APIAPP_LISTENDESTLIST': '["' + testQueue001 + '"]',
+  'APIAPP_LISTENDESTLIST': '[' + getQueueEnvString(testQueue001) + ']',
   'APIAPP_OBJECTSTORECONFIG': TestingHelper.Constants.memoryStoreConfigString
 }
 

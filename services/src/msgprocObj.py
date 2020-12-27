@@ -117,28 +117,35 @@ class msgProcObjClass(mainObjBaseClass):
     self.mqClient = mq_client_abstraction.createMQClientInstance(configDict=mqClientConfigDict)
 
     listenGuestListJSON = readFromEnviroment(env, 'APIAPP_LISTENDESTLIST', '[]', None)
-    listenGuestList = None
+    listenDestList = None
     try:
       if listenGuestListJSON != '[]':
-        listenGuestList = json.loads(listenGuestListJSON)
+        listenDestList = json.loads(listenGuestListJSON)
     except Exception as err:
+      print("Read APIAPP_LISTENDESTLIST=", listenGuestListJSON)
       print(err) # for the repr
       print(str(err)) # for just the message
       print(err.args) # the arguments that the exception has been called with.
       raise(InvalidListenDestListException)
 
-    if listenGuestList is None:
+    if listenDestList is None:
       raise Exception("Must set environemnt variable APIAPP_LISTENDESTLIST")
 
-    if not isinstance(listenGuestList, list):
+    if not isinstance(listenDestList, list):
       raise Exception("APIAPP_LISTENDESTLIST is not a list")
-    if len(listenGuestList) == 0:
+    if len(listenDestList) == 0:
       raise Exception("APIAPP_LISTENDESTLIST must have at least one item")
 
 
-    self.destinationsSubscribedTo = []
-    for dest in listenGuestList:
-      self.destinationsSubscribedTo.append(dest)
+    self.destinationsSubscribedTo = {}
+    for dest in listenDestList:
+      if not isinstance(dest, dict):
+        raise Exception("APIAPP_LISTENDESTLIST invalid item")
+      if "tenant" not in dest:
+        raise Exception("APIAPP_LISTENDESTLIST invalid item - missing tenant")
+      if "name" not in dest:
+        raise Exception("APIAPP_LISTENDESTLIST invalid item - missing name")
+      self.destinationsSubscribedTo[dest["name"]] = dest["tenant"]
 
 
     if (self.isInitOnce):
@@ -169,7 +176,7 @@ class msgProcObjClass(mainObjBaseClass):
       # should never reach here
       raise Exception("Not subscribed to " + destination)
     def fn(transactionContext):
-      self.eventLogger.log(destination=destination, eventBody=body, transactionContext=transactionContext, outputFn=outputFn)
+      self.eventLogger.log(tenant=self.destinationsSubscribedTo[destination], destination=destination, eventBody=body, transactionContext=transactionContext, outputFn=outputFn)
     self.objectStore.executeInsideTransaction(fnToExecute=fn)
 
 
@@ -177,7 +184,7 @@ class msgProcObjClass(mainObjBaseClass):
     if (self.isInitOnce == False):
       raise Exception('Trying to run app without initing')
 
-    for x in self.destinationsSubscribedTo:
+    for x in list(self.destinationsSubscribedTo.keys()):
       print("Subscribing to " + x)
       self.mqClient.subscribeToDestination(destination=x,msgRecieveFunction=self.LocalMessageProcessorFunctionCaller)
 
