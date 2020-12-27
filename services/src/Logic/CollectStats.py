@@ -1,5 +1,5 @@
 from sqlalchemy import select, and_, func
-
+import datetime
 
 
 def collectStats(tenant, name, subname, start, end, queryContext):
@@ -16,6 +16,7 @@ def collectStats(tenant, name, subname, start, end, queryContext):
       and_(
         queryContext.mainFactory.objDataTable.c.tenant == tenant
         ,queryContext.mainFactory.objDataTable.c.event_name == name
+        #TODO ADD DATE RANGE CLAUSE HERE
       )
     )
   ).select_from(queryContext.mainFactory.objDataTable).group_by(
@@ -33,19 +34,34 @@ def collectStats(tenant, name, subname, start, end, queryContext):
   # ])
 
   result = queryContext._INT_executeQuery(stmt)
-  dailyResultList = []
+  resultDict = {}
   for row in result:
     year=row[0]
     month=row[1]
     dom=row[2]
     count=row[3]
-    print("row", year, month, dom, count)
+    ## print("row", year, month, dom, count)
+    resultDict[str(year) + str(month) + str(dom)] = count
+
+  # Loop over every day in range inclusive of start and end
+  dailyResultList = []
+  curDate = start
+  seq = 0
+  while curDate <= end:
+    count = 0
+    curDay = str(curDate.year) + str(curDate.month) + str(curDate.day)
+    print("CURDATE", curDate, curDay)
+    if curDay in resultDict:
+      count = resultDict[curDay]
+    seq += 1
     obj = {
-      "daynum": 1,
-      "date": str(year) + str(month) + str(dom),
+      "daynum": seq,
+      "date": curDay,
       "count": count
     }
     dailyResultList.append(obj)
+
+    curDate = curDate + datetime.timedelta(days=1)
 
   retVal = {
     "daily": dailyResultList

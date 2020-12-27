@@ -2,6 +2,8 @@ from flask import request
 from flask_restplus import Resource, fields, marshal
 from werkzeug.exceptions import BadRequest, Conflict, InternalServerError, NotFound, Forbidden
 import Logic
+from dateutil.parser import parse
+import pytz
 
 def getStatsEndpointModel(appObj):
   return appObj.flastRestPlusAPIObject.model('statsEndpointModel', {
@@ -44,14 +46,18 @@ def registerAPI(appObj, APInamespace):
       content = marshal(content_raw, getStatsEndpointModel(appObj))
       requiredInPayload(content, ['start', 'end'])
 
+      startdt = parse(content["start"])
+      startdt2 = startdt.astimezone(pytz.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+      enddt = parse(content["end"])
+      enddt2 = enddt.astimezone(pytz.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
       def dbfn(queryContext):
         return Logic.collectStats(
           tenant=tenant,
           name=name,
           subname=None,
-          start=content["start"],
-          end=content["end"],
+          start=startdt2,
+          end=enddt2,
           queryContext=queryContext
         )
       try:
