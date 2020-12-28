@@ -18,7 +18,7 @@ steps:
       - export RJM_VERSION=$(cat ./VERSION)
       - export RJM_VERSION_UNDERSCORE=$(cat ./VERSION | tr '.' '_')
       - export RJM_MAJOR_VERSION=$(echo ${RJM_VERSION%%.*})
-      - export RJM_WS_NAME=$(echo "eventStatAggregator")
+      - export RJM_WS_NAME=$(echo "eventstataggregator")
       - export RJM_DOCKER_SERVICE_NAME=${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
       - export RJM_DOCKER_SERVICE_URL=tasks.${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
       - export RJM_KONG_UPSTREAM_NAME=${RJM_WS_NAME}_${RJM_MAJOR_VERSION}
@@ -26,7 +26,7 @@ steps:
       - export RJM_BUILDQUASARAPP_IMAGE="metcarob/docker-build-quasar-app:0.0.12"
       - export RJM_UNITTESTAPICONTIANER_IMAGE="metcarob/python_unittest_api_container:0.0.9"
       - export RJM_DOCKER_KONG_API_URL="http://tasks.kong:8001"
-      - export RJM_WS_NAME_MSGPROC001=$(echo "eventStatAggregator_msgproc001")
+      - export RJM_WS_NAME_MSGPROC001=$(echo "eventstataggregator_msgproc001")
       - export RJM_DOCKER_SERVICE_NAME_MSGPROC001=${RJM_WS_NAME_MSGPROC001}_${RJM_VERSION_UNDERSCORE}
       - cf_export RJM_VERSION=${RJM_VERSION}
       - cf_export RJM_VERSION_UNDERSCORE=${RJM_VERSION_UNDERSCORE}
