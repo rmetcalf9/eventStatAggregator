@@ -1,0 +1,261 @@
+version: '1.0'
+steps:
+
+  #This file describes the deployment process for eventStatAggregator
+
+  main_clone:
+    title: Cloning main repository...
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_REVISION}}'
+    git: gitlab
+
+  setup_variables:
+    description: Sets variables for future steps
+    image: alpine:latest
+    working_directory: ${{main_clone}}
+    commands:
+      - export RJM_VERSION=$(cat ./VERSION)
+      - export RJM_VERSION_UNDERSCORE=$(cat ./VERSION | tr '.' '_')
+      - export RJM_MAJOR_VERSION=$(echo ${RJM_VERSION%%.*})
+      - export RJM_WS_NAME=$(echo "eventStatAggregator")
+      - export RJM_DOCKER_SERVICE_NAME=${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
+      - export RJM_DOCKER_SERVICE_URL=tasks.${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
+      - export RJM_KONG_UPSTREAM_NAME=${RJM_WS_NAME}_${RJM_MAJOR_VERSION}
+      - export RJM_DOCKERWSCALLER_IMAGE="metcarob/docker-ws-caller:0.6.4"
+      - export RJM_BUILDQUASARAPP_IMAGE="metcarob/docker-build-quasar-app:0.0.12"
+      - export RJM_UNITTESTAPICONTIANER_IMAGE="metcarob/python_unittest_api_container:0.0.9"
+      - export RJM_DOCKER_KONG_API_URL="http://tasks.kong:8001"
+      - export RJM_WS_NAME_MSGPROC001=$(echo "eventStatAggregator_msgproc001")
+      - export RJM_DOCKER_SERVICE_NAME_MSGPROC001=${RJM_WS_NAME_MSGPROC001}_${RJM_VERSION_UNDERSCORE}
+      - cf_export RJM_VERSION=${RJM_VERSION}
+      - cf_export RJM_VERSION_UNDERSCORE=${RJM_VERSION_UNDERSCORE}
+      - cf_export RJM_MAJOR_VERSION=${RJM_MAJOR_VERSION}
+      - cf_export RJM_WS_NAME=${RJM_WS_NAME}
+      - cf_export RJM_DOCKER_SERVICE_NAME=${RJM_DOCKER_SERVICE_NAME}
+      - cf_export RJM_DOCKER_SERVICE_URL=${RJM_DOCKER_SERVICE_URL}
+      - cf_export RJM_KONG_UPSTREAM_NAME=${RJM_KONG_UPSTREAM_NAME}
+      - cf_export RJM_DOCKERWSCALLER_IMAGE=${RJM_DOCKERWSCALLER_IMAGE}
+      - cf_export RJM_BUILDQUASARAPP_IMAGE=${RJM_BUILDQUASARAPP_IMAGE}
+      - cf_export RJM_UNITTESTAPICONTIANER_IMAGE=${RJM_UNITTESTAPICONTIANER_IMAGE}
+      - cf_export RJM_DOCKER_KONG_API_URL=${RJM_DOCKER_KONG_API_URL}
+      - cf_export RJM_WS_NAME_MSGPROC001=${RJM_WS_NAME_MSGPROC001}
+      - cf_export RJM_DOCKER_SERVICE_NAME_MSGPROC001=${RJM_DOCKER_SERVICE_NAME_MSGPROC001}
+
+  build_the_image:
+    working_directory: ${{main_clone}}
+    type: build
+    image_name: metcarob/${{RJM_WS_NAME}}
+    tag: ${{RJM_VERSION}}
+
+  #Deploy new container to my website swarm
+  deploy_to_metcarob_swarm:
+      image: codefresh/remote-docker
+      working_directory: ${{main_clone}}
+      commands:
+        - rdocker ${{RDOCKER_HOST}} docker login -u ${{RJM_DOCKERHUB_USER}} -p ${{RJM_DOCKERHUB_PASS}} \&\& docker service create
+          --with-registry-auth
+          --name ${RJM_DOCKER_SERVICE_NAME}
+          --network main_net
+          -e APIAPP_APIURL=https://api.metcarob.com/eventStatAggregator/v${{RJM_MAJOR_VERSION}}/public/api
+          -e APIAPP_APIDOCSURL=https://api.metcarob.com/eventStatAggregator/v${{RJM_MAJOR_VERSION}}/public/web/apidocs
+          -e APIAPP_FRONTENDURL=https://api.metcarob.com/eventStatAggregator/v${{RJM_MAJOR_VERSION}}/public/web/frontend
+          -e APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN="https://api.metcarob.com,https://linkthethings.com,https://challengeswipe.com"
+          --secret eventStatAggregator_objectstore_config
+          -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
+          --secret eventStatAggregator_mqclientconfig
+          -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
+          metcarob/${RJM_WS_NAME}:${RJM_VERSION}
+      environment:
+        - SSH_KEY=${{SSH_KEY_COMMAS}}
+        - SSH_PORT=${{SSH_PORT}}
+        - SPLIT_CHAR=${{SPLIT_CHAR}}
+
+  deploy_msgproc001_to_metcarob_swarm:
+      image: codefresh/remote-docker
+      working_directory: ${{main_clone}}
+      commands:
+        - rdocker ${{RDOCKER_HOST}} docker login -u ${{RJM_DOCKERHUB_USER}} -p ${{RJM_DOCKERHUB_PASS}} \&\& docker service create
+          --with-registry-auth
+          --name ${RJM_DOCKER_SERVICE_NAME_MSGPROC001}
+          --network main_net
+          --no-healthcheck
+          --secret eventStatAggregator_objectstore_config
+          -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
+          --secret eventStatAggregator_mqclientconfig
+          -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
+          metcarob/${RJM_WS_NAME}:${RJM_VERSION}
+          "/run_msgproc_docker.sh"
+          "/queue/inboundConnectorExecutions"
+          "/queue/notifyConnectorGraphDeleted"
+      environment:
+        - SSH_KEY=${{SSH_KEY_COMMAS}}
+        - SSH_PORT=${{SSH_PORT}}
+        - SPLIT_CHAR=${{SPLIT_CHAR}}
+
+  # Connect test endpoint to new container
+  ## This connects directly to the container - no upstreams in use for the test endpoint
+  configure_kong_test_PUBLIC_endpoint_to_connect_to_container:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --entrypoint kong_install_service_and_route
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_DOCKER_KONG_API_URL}}
+        ${{RJM_WS_NAME}}_v${{RJM_MAJOR_VERSION}}_TEST_PUBLIC http ${{RJM_DOCKER_SERVICE_URL}} 80 /public/
+        https api.metcarob.com /${{RJM_WS_NAME}}/test/v${{RJM_MAJOR_VERSION}}/public null null null true
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+
+  # Connect test endpoint to new container
+  ## This connects directly to the container - no upstreams in use for the test endpoint
+  configure_kong_test_PRIVATE_endpoint_to_connect_to_container:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --entrypoint kong_install_service_and_route
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_DOCKER_KONG_API_URL}}
+        ${{RJM_WS_NAME}}_v${{RJM_MAJOR_VERSION}}_TEST_PRIVATE http ${{RJM_DOCKER_SERVICE_URL}} 80 /private/
+        https api.metcarob.com /${{RJM_WS_NAME}}/test/v${{RJM_MAJOR_VERSION}}/private null null null true
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+
+  #Deploys the prod kong endpoint
+  ## the serivce target is not the container, instead it is the upstream
+  ## this won't work until the upstream is in place
+  configure_kong_prod_PUBLIC_endpoint:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --entrypoint kong_install_service_and_route
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_DOCKER_KONG_API_URL}}
+        ${{RJM_WS_NAME}}_v${{RJM_MAJOR_VERSION}}_PUBLIC http ${{RJM_KONG_UPSTREAM_NAME}} 80 /public/
+        https api.metcarob.com /${{RJM_WS_NAME}}/v${{RJM_MAJOR_VERSION}}/public null null null true
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    retry:
+      maxAttempts: 3
+      delay: 3
+      exponentialFactor: 1
+
+  configure_kong_prod_PRIVATE_endpoint:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --entrypoint kong_install_service_and_route
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_DOCKER_KONG_API_URL}}
+        ${{RJM_WS_NAME}}_v${{RJM_MAJOR_VERSION}}_PRIVATE http ${{RJM_KONG_UPSTREAM_NAME}} 80 /private/
+        https api.metcarob.com /${{RJM_WS_NAME}}/v${{RJM_MAJOR_VERSION}}/private null null null true
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    retry:
+      maxAttempts: 3
+      delay: 3
+      exponentialFactor: 1
+
+  configure_kong_prod_upstream:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --entrypoint kong_add_upstream
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_DOCKER_KONG_API_URL}}
+        ${{RJM_KONG_UPSTREAM_NAME}}
+        ${{RJM_DOCKER_SERVICE_URL}}:80
+        remove_other_targets
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    retry:
+      maxAttempts: 3
+      delay: 3
+      exponentialFactor: 1
+
+  approveCleanUpOldVersion:
+    type: pending-approval
+    title: Check prod version is working
+    description: Check prod version ${{RJM_VERSION}} before continuing pipeline and destorying old versions
+    timeout:
+      duration: 2
+      finalState: denied
+
+  cleanUpOldVersion:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --volume=/var/run:/var/run --entrypoint docker_service_remove_non_live
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_WS_NAME}}
+        ${{RJM_VERSION}}
+        metcarob/
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    when:
+      steps:
+      - name: approveCleanUpOldVersion
+        on:
+        - approved
+    retry:
+      maxAttempts: 2
+      delay: 3
+      exponentialFactor: 1
+
+  cleanUpOldVersion_msgproc001:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --volume=/var/run:/var/run --entrypoint docker_service_remove_non_live
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_WS_NAME_MSGPROC001}}
+        ${{RJM_VERSION}}
+        metcarob/
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    when:
+      steps:
+      - name: approveCleanUpOldVersion
+        on:
+        - approved
+    retry:
+      maxAttempts: 2
+      delay: 3
+      exponentialFactor: 1
+
+  cleanUpOldVersion_msgproc002:
+    image: codefresh/remote-docker
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --volume=/var/run:/var/run --entrypoint docker_service_remove_non_live
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_WS_NAME_MSGPROC002}}
+        ${{RJM_VERSION}}
+        metcarob/
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    when:
+      steps:
+      - name: approveCleanUpOldVersion
+        on:
+        - approved
+    retry:
+      maxAttempts: 2
+      delay: 3
+      exponentialFactor: 1
