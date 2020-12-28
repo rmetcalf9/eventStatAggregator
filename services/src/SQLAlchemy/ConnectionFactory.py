@@ -55,8 +55,9 @@ class SQLAlchemyConnectionFactory():
         "pool_size": 40,
         "max_overflow": 0
       }
-      if ConfigDict["connect_args"] is not None:
-        otherArgsForCreateEngine["connect_args"] = ConfigDict["connect_args"]
+      if "connect_args" in ConfigDict:
+        if ConfigDict["connect_args"] is not None:
+          otherArgsForCreateEngine["connect_args"] = ConfigDict["connect_args"]
 
     if "poolclass" in otherArgsForCreateEngine:
       if otherArgsForCreateEngine["poolclass"] == "StaticPool":
