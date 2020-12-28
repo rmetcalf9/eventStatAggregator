@@ -63,8 +63,6 @@ steps:
           -e APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN="https://api.metcarob.com,https://linkthethings.com,https://challengeswipe.com"
           --secret eventStatAggregator_objectstore_config
           -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
-          --secret eventStatAggregator_mqclientconfig
-          -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
           metcarob/${RJM_WS_NAME}:${RJM_VERSION}
       environment:
         - SSH_KEY=${{SSH_KEY_COMMAS}}
@@ -84,6 +82,7 @@ steps:
           -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
           --secret eventStatAggregator_mqclientconfig
           -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
+          -e APIAPP_LISTENDESTLIST="[{\"tenant\":\"challengeapp\",\"name\":\"topic/challengeappevents\"},{\"tenant\":\"challengeappstage\",\"name\":\"topic/challengeappstageevents\"}]"
           metcarob/${RJM_WS_NAME}:${RJM_VERSION}
           "/run_msgproc_docker.sh"
           "/queue/inboundConnectorExecutions"

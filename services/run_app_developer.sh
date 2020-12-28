@@ -46,8 +46,6 @@ export APIAPP_APIDOCSURL=${EXTURL}:8097/apidocs
 export APIAPP_FRONTENDURL=${EXTURL}:${EXTPORT}/frontend
 export APIAPP_APIACCESSSECURITY=[]
 export APIAPP_PORT=8097
-##export APIAPP_OBJECTSTORECONFIG="{\"Type\":\"Memory\"}"
-export APIAPP_OBJECTSTORECONFIG="{\"Type\": \"SimpleFileStore\",\"BaseLocation\": \"./objectstoredata\"}"
 export APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN="http://localhost:8080"
 
 export APIAPP_USERMANAGERCONFIG="{ \"baseURL\": \"http://127.0.0.1:8099\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }"

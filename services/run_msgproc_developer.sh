@@ -29,7 +29,6 @@ APP_DIR=.
 export APIAPP_OBJECTSTORECONFIG="{\"Type\": \"SQLAlchemy\",\"connectionString\": \"sqlite:///objectstoredata/mainfile.db\", \"create_engine_args\": {\"poolclass\": \"StaticPool\", \"connect_args\": {\"check_same_thread\":false}}}"
 
 export APIAPP_MQCLIENTCONFIG="{ \"Type\": \"Stomp\", \"ConnectionString\": \"stomp://127.0.0.1:61613\", \"Username\": \"admin\", \"Password\": \"admin\" }"
-export APIAPP_USERMANAGERCONFIG="{ \"baseURL\": \"http://127.0.0.1:8099\", \"tenant\": \"linkvis\", \"originToUseInRequests\": \"http://127.0.0.1:8099\" }"
 
 export APIAPP_LISTENDESTLIST="[{\"tenant\":\"dev\", \"name\":\"/queue/eventCountTestQueue001\"}, {\"tenant\":\"dev\", \"name\":\"/queue/eventCountTestQueue002\"},{\"tenant\":\"dev2\", \"name\":\"/queue/eventCountTestQueue003\"}, {\"tenant\":\"dev2\", \"name\":\"/queue/eventCountTestQueue004\"}]"
 
