@@ -8,7 +8,7 @@ steps:
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
-    git: gitlab
+    git: github
 
   setup_variables:
     description: Sets variables for future steps
