@@ -82,7 +82,7 @@ steps:
           -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
           --secret eventStatAggregator_mqclientconfig
           -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
-          -e APIAPP_LISTENDESTLIST="[{\"tenant\":\"challengeapp\",\"name\":\"topic/challengeappevents\"},{\"tenant\":\"challengeappstage\",\"name\":\"topic/challengeappstageevents\"}]"
+          -e APIAPP_LISTENDESTLIST="\[\{\\\"tenant\\\":\\\"challengeapp\\\",\\\"name\\\":\\\"topic/challengeappevents\\\"\},\{\\\"tenant\\\":\\\"challengeappstage\\\",\\\"name\\\":\\\"topic/challengeappstageevents\\\"\}\]"
           metcarob/${RJM_WS_NAME}:${RJM_VERSION}
           "/run_msgproc_docker.sh"
           "/queue/inboundConnectorExecutions"
