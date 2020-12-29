@@ -249,10 +249,10 @@ class test_statsB(helpers):
 
     expectedRes = {
       "daily": [
-        {"daynum": 1, "date": str(testTimeDay001.year) + str(testTimeDay001.month) + str(testTimeDay001.day), "count": 1},
-        {"daynum": 2, "date": str(testTimeDay002.year) + str(testTimeDay002.month) + str(testTimeDay002.day), "count": 0},
-        {"daynum": 3, "date": str(testTimeDay003.year) + str(testTimeDay003.month) + str(testTimeDay003.day), "count": 0},
-        {"daynum": 4, "date": str(testTimeDay004.year) + str(testTimeDay004.month) + str(testTimeDay004.day), "count": 0}
+        {"daynum": 1, "date": "{:04d}".format(testTimeDay001.year) + "{:02d}".format(testTimeDay001.month) + "{:02d}".format(testTimeDay001.day), "count": 1},
+        {"daynum": 2, "date": "{:04d}".format(testTimeDay002.year) + "{:02d}".format(testTimeDay002.month) + "{:02d}".format(testTimeDay002.day), "count": 0},
+        {"daynum": 3, "date": "{:04d}".format(testTimeDay003.year) + "{:02d}".format(testTimeDay003.month) + "{:02d}".format(testTimeDay003.day), "count": 0},
+        {"daynum": 4, "date": "{:04d}".format(testTimeDay004.year) + "{:02d}".format(testTimeDay004.month) + "{:02d}".format(testTimeDay004.day), "count": 0}
       ]
     }
     self.assertStatsResultsMatch(expected=expectedRes, got=result)

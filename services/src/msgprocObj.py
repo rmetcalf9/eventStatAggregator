@@ -163,7 +163,13 @@ class msgProcObjClass(mainObjBaseClass):
         raise Exception("APIAPP_LISTENDESTLIST invalid item - missing name")
       if dest["name"] in self.destinationsSubscribedTo:
         raise Exception("APIAPP_LISTENDESTLIST has same destination twice")
-      self.destinationsSubscribedTo[dest["name"]] = dest["tenant"]
+      durableSubscriptionName = None
+      if "durableSubscriptionName" in dest:
+        durableSubscriptionName = dest["durableSubscriptionName"]
+      self.destinationsSubscribedTo[dest["name"]] = {
+        "tenant": dest["tenant"],
+        "durableSubscriptionName": durableSubscriptionName
+      }
 
 
     if (self.isInitOnce):
@@ -199,7 +205,7 @@ class msgProcObjClass(mainObjBaseClass):
       # should never reach here
       raise Exception("Not subscribed to " + destination)
     def fn(transactionContext):
-      self.eventLogger.log(tenant=self.destinationsSubscribedTo[destination], destination=destination, eventBody=body, transactionContext=transactionContext, outputFn=outputFn)
+      self.eventLogger.log(tenant=self.destinationsSubscribedTo[destination]["tenant"], destination=destination, eventBody=body, transactionContext=transactionContext, outputFn=outputFn)
     self.objectStore.executeInsideTransaction(fnToExecute=fn)
 
 
@@ -208,8 +214,8 @@ class msgProcObjClass(mainObjBaseClass):
       raise Exception('Trying to run app without initing')
 
     for x in list(self.destinationsSubscribedTo.keys()):
-      print("Subscribing to " + x)
-      self.mqClient.subscribeToDestination(destination=x,msgRecieveFunction=self.LocalMessageProcessorFunctionCaller)
+      print("Subscribing to " + x + " durableSubscriptionName:" + self.destinationsSubscribedTo[x]["durableSubscriptionName"])
+      self.mqClient.subscribeToDestination(destination=x,msgRecieveFunction=self.LocalMessageProcessorFunctionCaller,durableSubscriptionName=self.destinationsSubscribedTo[x]["durableSubscriptionName"])
 
     try:
       body = None
