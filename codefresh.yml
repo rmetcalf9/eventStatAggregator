@@ -48,6 +48,31 @@ steps:
     image_name: metcarob/${{RJM_WS_NAME}}
     tag: ${{RJM_VERSION}}
 
+  # After this stage messages are no longer processed
+  cleanUpOldVersion_msgproc001:
+    image: codefresh/remote-docker
+    description: New version can not subscribe to queue until old one has terminated
+    working_directory: ${{main_clone}}
+    commands:
+      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --volume=/var/run:/var/run --entrypoint docker_service_remove_non_live
+        ${{RJM_DOCKERWSCALLER_IMAGE}}
+        ${{RJM_WS_NAME_MSGPROC001}}
+        ${{RJM_VERSION}}
+        metcarob/
+    environment:
+      - SSH_KEY=${{SSH_KEY_COMMAS}}
+      - SSH_PORT=${{SSH_PORT}}
+      - SPLIT_CHAR=${{SPLIT_CHAR}}
+    when:
+      steps:
+      - name: approveCleanUpOldVersion
+        on:
+        - approved
+    retry:
+      maxAttempts: 2
+      delay: 3
+      exponentialFactor: 1
+
   #Deploy new container to my website swarm
   deploy_to_metcarob_swarm:
       image: codefresh/remote-docker
@@ -212,26 +237,5 @@ steps:
       delay: 3
       exponentialFactor: 1
 
-  cleanUpOldVersion_msgproc001:
-    image: codefresh/remote-docker
-    working_directory: ${{main_clone}}
-    commands:
-      - rdocker ${{RDOCKER_HOST}} docker run --rm -it --network main_net --volume=/var/run:/var/run --entrypoint docker_service_remove_non_live
-        ${{RJM_DOCKERWSCALLER_IMAGE}}
-        ${{RJM_WS_NAME_MSGPROC001}}
-        ${{RJM_VERSION}}
-        metcarob/
-    environment:
-      - SSH_KEY=${{SSH_KEY_COMMAS}}
-      - SSH_PORT=${{SSH_PORT}}
-      - SPLIT_CHAR=${{SPLIT_CHAR}}
-    when:
-      steps:
-      - name: approveCleanUpOldVersion
-        on:
-        - approved
-    retry:
-      maxAttempts: 2
-      delay: 3
-      exponentialFactor: 1
+
 
