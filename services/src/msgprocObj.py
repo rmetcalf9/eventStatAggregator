@@ -185,6 +185,7 @@ class msgProcObjClass(mainObjBaseClass):
   def exit_gracefully(self, signum, frame):
     print("Exit Gracefully called")
     self.mainObjBaseClass_exit_gracefully()
+    self.mqClient.close(wait=True)
     raise self.ServerTerminationError()
 
   def LocalMessageProcessorFunctionCaller(self, destination, body):
