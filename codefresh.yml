@@ -80,6 +80,7 @@ steps:
           --no-healthcheck
           --secret eventStatAggregator_objectstore_config
           -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
+          -e APIAPP_OBJECTSTOREDETAILLOGGING=Y
           --secret eventStatAggregator_mqclientconfig
           -e APIAPP_MQCLIENTCONFIGFILE=/run/secrets/eventStatAggregator_mqclientconfig
           -e APIAPP_LISTENDESTLIST="\[\{\\\"tenant\\\":\\\"challengeapp\\\",\\\"name\\\":\\\"/topic/challengeappevents\\\",\\\"durableSubscriptionName\\\":\\\"eventstatagg\\\"\},\{\\\"tenant\\\":\\\"challengeappstage\\\",\\\"name\\\":\\\"/topic/challengeappstageevents\\\",\\\"durableSubscriptionName\\\":\\\"eventstatagg\\\"\}\]"
