@@ -65,7 +65,7 @@ class SQLAlchemyConnectionFactory():
         otherArgsForCreateEngine["poolclass"] = StaticPool
 
     if detailLogging:
-      print("Creating connection with arge:", otherArgsForCreateEngine)
+      print("Creating connection with args:", otherArgsForCreateEngine)
     self.engine = create_engine(ConfigDict["connectionString"], **otherArgsForCreateEngine)
 
 
