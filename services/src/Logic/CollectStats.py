@@ -86,6 +86,8 @@ def collectStats(tenant, name, subname, start, end, queryContext):
   retVal = {
     "statName": name,
     "statSubname": subname,
+    "statStartDateStr": "{:04d}{:02d}{:02d}".format(start.year, start.month, start.day),
+    "statEndDateStr": "{:04d}{:02d}{:02d}".format(end.year, end.month, end.day),
     "daily": dailyResultList
   }
 

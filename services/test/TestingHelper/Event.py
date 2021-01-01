@@ -10,9 +10,11 @@ def generateSampleEvent(name="TestName001",subname="TestSubName001", testTime=da
     "timestamp": testTime.isoformat()
   }
 
-def getSampleStatResponse(name, daily, subname=None):
+def getSampleStatResponse(name, daily, subname=None, startDate=None, endDate=None):
   retVal = {
     "statName": name,
+    "statStartDateStr": "{:04d}{:02d}{:02d}".format(startDate.year, startDate.month, startDate.day),
+    "statEndDateStr": "{:04d}{:02d}{:02d}".format(endDate.year, endDate.month, endDate.day),
     "daily": daily
   }
   if subname is not None:

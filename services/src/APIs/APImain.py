@@ -20,6 +20,8 @@ def getStatsResultModel(appObj):
   return appObj.flastRestPlusAPIObject.model('statsResultModel', {
     'statName': fields.String(default='DEFAULT', description='Stat name'),
     'statSubname': fields.String(default=None, description='Stat sub name'),
+    'statStartDateStr': fields.String(default='DEFAULT', description='Date in form YYYYMMDD'),
+    'statEndDateStr': fields.String(default='DEFAULT', description='Date in form YYYYMMDD'),
     'daily': fields.List(fields.Nested(dailyResultModel))
   })
 

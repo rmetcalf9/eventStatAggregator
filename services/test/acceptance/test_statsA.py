@@ -49,7 +49,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTime, endDate=testTime, daily=
       [
         {"daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTime.year, testTime.month, testTime.day), "count": 0}
       ]
@@ -76,7 +76,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTime, endDate=testTime, daily=
       [
         { "daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTime.year, testTime.month, testTime.day), "count": 1}
       ]
@@ -104,7 +104,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTimeDay001, endDate=testTimeDay003, daily=
       [
         {"daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTimeDay001.year, testTimeDay001.month, testTimeDay001.day), "count": 0},
         {"daynum": 2, "date": "{:04d}{:02d}{:02d}".format(testTimeDay002.year, testTimeDay002.month, testTimeDay002.day), "count": 1},
@@ -146,7 +146,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTimeDay001, endDate=testTimeDay003, daily=
       [
         {"daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTimeDay001.year, testTimeDay001.month, testTimeDay001.day), "count": 1},
         {"daynum": 2, "date": "{:04d}{:02d}{:02d}".format(testTimeDay002.year, testTimeDay002.month, testTimeDay002.day), "count": 1},
@@ -190,7 +190,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTimeDay001, endDate=testTimeDay003, daily=
       [
         {"daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTimeDay001.year, testTimeDay001.month, testTimeDay001.day), "count": 1},
         {"daynum": 2, "date": "{:04d}{:02d}{:02d}".format(testTimeDay002.year, testTimeDay002.month, testTimeDay002.day), "count": 2},
@@ -234,7 +234,7 @@ class test_statsA(helpers):
       checkAndParseResponse=True
     )
 
-    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", daily=
+    expectedRes = TestingHelper.getSampleStatResponse(name="SomeName", startDate=testTimeDay001, endDate=testTimeDay003, daily=
       [
         {"daynum": 1, "date": "{:04d}{:02d}{:02d}".format(testTimeDay001.year, testTimeDay001.month, testTimeDay001.day), "count": 1},
         {"daynum": 2, "date": "{:04d}{:02d}{:02d}".format(testTimeDay002.year, testTimeDay002.month, testTimeDay002.day), "count": 0},
