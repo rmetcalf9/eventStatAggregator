@@ -18,6 +18,8 @@ def getStatsResultModel(appObj):
     'count': fields.Integer(default=None, description='Event count for this day')
   })
   return appObj.flastRestPlusAPIObject.model('statsResultModel', {
+    'statName': fields.String(default='DEFAULT', description='Stat name'),
+    'statSubname': fields.String(default=None, description='Stat sub name'),
     'daily': fields.List(fields.Nested(dailyResultModel))
   })
 

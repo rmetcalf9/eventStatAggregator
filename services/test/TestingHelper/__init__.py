@@ -1,3 +1,3 @@
 
 from .Constants import memoryStoreConfigString, testingTenant
-from .Event import generateSampleEvent
+from .Event import generateSampleEvent, getSampleStatResponse

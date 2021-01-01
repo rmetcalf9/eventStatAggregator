@@ -105,6 +105,13 @@ class testClassWithHelpers(testClassWithTestClient):
         unittestTestCaseClass=self,
         first=got["daily"][c],
         second=expected["daily"][c],
-        msg="Returned stats wrong",
+        msg="Returned stats wrong for day " + expected["daily"][c]["date"],
         ignoredRootKeys=[]
       )
+    python_Testing_Utilities.assertObjectsEqual(
+      unittestTestCaseClass=self,
+      first=got,
+      second=expected,
+      msg="Wrong main values",
+      ignoredRootKeys=["daily"]
+    )

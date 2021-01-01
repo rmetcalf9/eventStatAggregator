@@ -61,7 +61,7 @@ def collectStats(tenant, name, subname, start, end, queryContext):
     dom=row[2]
     count=row[3]
     ## print("row", year, month, dom, count)
-    resultDict[str(year) + str(month) + str(dom)] = count
+    resultDict["{:04d}{:02d}{:02d}".format(year, month, dom)] = count
 
   # Loop over every day in range inclusive of start and end
   dailyResultList = []
@@ -69,7 +69,7 @@ def collectStats(tenant, name, subname, start, end, queryContext):
   seq = 0
   while curDate <= end:
     count = 0
-    curDay = "{:04d}".format(curDate.year) + "{:02d}".format(curDate.month) + "{:02d}".format(curDate.day)
+    curDay = "{:04d}{:02d}{:02d}".format(curDate.year, curDate.month, curDate.day)
     if curDay in resultDict:
       count = resultDict[curDay]
     seq += 1
@@ -82,7 +82,10 @@ def collectStats(tenant, name, subname, start, end, queryContext):
 
     curDate = curDate + datetime.timedelta(days=1)
 
+  print("SENDING RESULTS", dailyResultList)
   retVal = {
+    "statName": name,
+    "statSubname": subname,
     "daily": dailyResultList
   }
 
