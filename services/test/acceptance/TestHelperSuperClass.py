@@ -22,7 +22,7 @@ import python_Testing_Utilities
 httpOrigin = 'http://a.com'
 
 infoAPIPrefix = '/api/public/info'
-mainAPIPrefix = '/api/public/main'
+mainAPIPrefix = '/api/private/main'
 
 env = {
   'APIAPP_MODE': 'DOCKER',
