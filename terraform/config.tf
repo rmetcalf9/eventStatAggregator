@@ -10,6 +10,6 @@ terraform {
 }
 
 provider "kong" {
-    kong_admin_uri = "http://kong:8001"
+    kong_admin_uri = var.kong_admin_uri
 }
 
