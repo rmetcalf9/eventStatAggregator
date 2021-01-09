@@ -1,3 +1,9 @@
 __pycache__
 venv
 objectstoredata
+
+
+.ash_history
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
