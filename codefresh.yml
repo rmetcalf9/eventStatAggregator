@@ -28,6 +28,7 @@ steps:
       - export RJM_DOCKER_KONG_API_URL="http://tasks.kong:8001"
       - export RJM_WS_NAME_MSGPROC001=$(echo "eventstataggregator_msgproc001")
       - export RJM_DOCKER_SERVICE_NAME_MSGPROC001=${RJM_WS_NAME_MSGPROC001}_${RJM_VERSION_UNDERSCORE}
+      - export MEMSET_CLOUD_ROOT=/memset_cloud
       - cf_export RJM_VERSION=${RJM_VERSION}
       - cf_export RJM_VERSION_UNDERSCORE=${RJM_VERSION_UNDERSCORE}
       - cf_export RJM_MAJOR_VERSION=${RJM_MAJOR_VERSION}
@@ -41,6 +42,7 @@ steps:
       - cf_export RJM_DOCKER_KONG_API_URL=${RJM_DOCKER_KONG_API_URL}
       - cf_export RJM_WS_NAME_MSGPROC001=${RJM_WS_NAME_MSGPROC001}
       - cf_export RJM_DOCKER_SERVICE_NAME_MSGPROC001=${RJM_DOCKER_SERVICE_NAME_MSGPROC001}
+      - cf_export MEMSET_CLOUD_ROOT=${MEMSET_CLOUD_ROOT}
 
   build_the_image:
     working_directory: ${{main_clone}}
@@ -212,7 +214,8 @@ steps:
       - SSH_PORT=${{SSH_PORT}}
       - SPLIT_CHAR=${{SPLIT_CHAR}}
     commands:
-      - transferDirectory ${{RDOCKER_HOST}} ./terraform/ /memset_cloud/data_to_backup/terraform/executions/${{RJM_WS_NAME}}/${{RJM_MAJOR_VERSION}}
+      - transferDirectory ${{RDOCKER_HOST}} ./terraform/ ${{MEMSET_CLOUD_ROOT}}/data_to_backup/terraform/executions/${{RJM_WS_NAME}}/${{RJM_MAJOR_VERSION}}
+      - ssh -p ${{SSH_PORT}} -i ${HOME}/.ssh/id_rdocker -o StrictHostKeyChecking=no ${{RDOCKER_HOST}} ${{MEMSET_CLOUD_ROOT}}/scripts/execute_terraform.sh
 
   approveCleanUpOldVersion:
     type: pending-approval
