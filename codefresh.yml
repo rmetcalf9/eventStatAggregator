@@ -124,7 +124,7 @@ steps:
       - SSH_PORT=${{SSH_PORT}}
       - SPLIT_CHAR=${{SPLIT_CHAR}}
     commands:
-      - transferDirectory ${{RDOCKER_HOST}} ./terraform/ ${{MEMSET_CLOUD_ROOT}}/data_to_backup/terraform/executions/${{RJM_WS_NAME}}/${{RJM_MAJOR_VERSION}}
+      - transferDirectory ${{RDOCKER_HOST}} ./terraform/ ${{MEMSET_CLOUD_ROOT}}/data_to_backup/terraform/executions/${{RJM_WS_NAME}}
       - ssh -p ${{SSH_PORT}} -i ${HOME}/.ssh/id_rdocker -o StrictHostKeyChecking=no ${{RDOCKER_HOST}} ${{MEMSET_CLOUD_ROOT}}/scripts/update_terraform_deployment.sh  setup_test ${{MEMSET_CLOUD_ROOT}} ${{RJM_WS_NAME}} ${{RJM_VERSION}}
       - ssh -p ${{SSH_PORT}} -i ${HOME}/.ssh/id_rdocker -o StrictHostKeyChecking=no ${{RDOCKER_HOST}} ${{MEMSET_CLOUD_ROOT}}/scripts/update_terraform_deployment.sh  deploy ${{MEMSET_CLOUD_ROOT}} ${{RJM_WS_NAME}} ${{RJM_VERSION}}
       - ssh -p ${{SSH_PORT}} -i ${HOME}/.ssh/id_rdocker -o StrictHostKeyChecking=no ${{RDOCKER_HOST}} ${{MEMSET_CLOUD_ROOT}}/scripts/execute_terraform.sh ${{MEMSET_CLOUD_ROOT}} ${{RJM_WS_NAME}}
