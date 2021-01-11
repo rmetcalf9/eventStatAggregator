@@ -2,7 +2,7 @@
 resource "kong_service" "service_test_private" {
 	name     	= format("TF_%s_v%s_TEST_PRIVATE", var.ws_name, var.major_version)
 	protocol 	= "http"
-	host     	= format("tasks.%s_%s", var.ws_name, var.version_underscore)
+	host     	= format("tasks.%s_%s", var.ws_name, replace(var.major_version_deployment_config.test_version, ".", "_"))
 	port     	= 80
 	path     	= "/private/"
 	retries  	= 5

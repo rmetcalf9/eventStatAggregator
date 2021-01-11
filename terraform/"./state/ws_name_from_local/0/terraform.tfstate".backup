@@ -1,0 +1,406 @@
+{
+  "version": 4,
+  "terraform_version": "0.14.4",
+  "serial": 11,
+  "lineage": "1e059730-2925-3e75-52d4-2ce91e7153ca",
+  "outputs": {},
+  "resources": [
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_route",
+      "name": "route_private",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "destination": [],
+            "hosts": [
+              "api.metcarob.com"
+            ],
+            "id": "337fb9f6-007c-4487-96e8-e9a7e9e21722",
+            "methods": null,
+            "name": null,
+            "paths": [
+              "/ws_name_from_local/v0/private"
+            ],
+            "preserve_host": false,
+            "protocols": [
+              "https"
+            ],
+            "regex_priority": 0,
+            "service_id": "6741f23e-4f60-4751-8f9f-4cd51fca241d",
+            "snis": null,
+            "source": [],
+            "strip_path": true
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_service.service_private",
+            "module.saas_infra.kong_upstream.upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_route",
+      "name": "route_public",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "destination": [],
+            "hosts": [
+              "api.metcarob.com"
+            ],
+            "id": "7f3032a6-ee28-4964-bb24-f5b76198c65a",
+            "methods": null,
+            "name": null,
+            "paths": [
+              "/ws_name_from_local/v0/public"
+            ],
+            "preserve_host": false,
+            "protocols": [
+              "https"
+            ],
+            "regex_priority": 0,
+            "service_id": "0e8b7bec-6eb2-485a-8515-6b437b0c67bb",
+            "snis": null,
+            "source": [],
+            "strip_path": true
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_service.service_public",
+            "module.saas_infra.kong_upstream.upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_route",
+      "name": "route_test_private",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "destination": [],
+            "hosts": [
+              "api.metcarob.com"
+            ],
+            "id": "5febec81-6510-4ad5-9733-df9beaa34c95",
+            "methods": null,
+            "name": null,
+            "paths": [
+              "/ws_name_from_local/test/v0/private"
+            ],
+            "preserve_host": false,
+            "protocols": [
+              "https"
+            ],
+            "regex_priority": 0,
+            "service_id": "e2aafad7-4160-4300-9c92-ef6a4607d65a",
+            "snis": null,
+            "source": [],
+            "strip_path": true
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_service.service_test_private"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_route",
+      "name": "route_test_public",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "destination": [],
+            "hosts": [
+              "api.metcarob.com"
+            ],
+            "id": "e409cfb5-2938-45f1-944a-8d843e0be0d6",
+            "methods": null,
+            "name": null,
+            "paths": [
+              "/ws_name_from_local/test/v0/public"
+            ],
+            "preserve_host": false,
+            "protocols": [
+              "https"
+            ],
+            "regex_priority": 0,
+            "service_id": "25d97464-c291-488d-a4bd-798207d0af28",
+            "snis": null,
+            "source": [],
+            "strip_path": true
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_service.service_test_public"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_service",
+      "name": "service_private",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "connect_timeout": 60000,
+            "host": "TF_ws_name_from_local_0",
+            "id": "6741f23e-4f60-4751-8f9f-4cd51fca241d",
+            "name": "TF_ws_name_from_local_v0_PRIVATE",
+            "path": "/private/",
+            "port": 80,
+            "protocol": "http",
+            "read_timeout": 60000,
+            "retries": 5,
+            "write_timeout": 60000
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_upstream.upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_service",
+      "name": "service_public",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "connect_timeout": 60000,
+            "host": "TF_ws_name_from_local_0",
+            "id": "0e8b7bec-6eb2-485a-8515-6b437b0c67bb",
+            "name": "TF_ws_name_from_local_v0_PUBLIC",
+            "path": "/public/",
+            "port": 80,
+            "protocol": "http",
+            "read_timeout": 60000,
+            "retries": 5,
+            "write_timeout": 60000
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_upstream.upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_service",
+      "name": "service_test_private",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "connect_timeout": 60000,
+            "host": "tasks.ws_name_from_local_0_1_23",
+            "id": "e2aafad7-4160-4300-9c92-ef6a4607d65a",
+            "name": "TF_ws_name_from_local_v0_TEST_PRIVATE",
+            "path": "/private/",
+            "port": 80,
+            "protocol": "http",
+            "read_timeout": 60000,
+            "retries": 5,
+            "write_timeout": 60000
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_service",
+      "name": "service_test_public",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "connect_timeout": 60000,
+            "host": "tasks.ws_name_from_local_0_1_23",
+            "id": "25d97464-c291-488d-a4bd-798207d0af28",
+            "name": "TF_ws_name_from_local_v0_TEST_PUBLIC",
+            "path": "/public/",
+            "port": 80,
+            "protocol": "http",
+            "read_timeout": 60000,
+            "retries": 5,
+            "write_timeout": 60000
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_target",
+      "name": "target",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "895e4f7c-3b82-4ca9-81d3-14852a390bf3/17b42161-8de6-4c65-b136-6f6b5dfe20a9",
+            "target": "tasks.ws_name_from_local_0_1_23:80",
+            "upstream_id": "895e4f7c-3b82-4ca9-81d3-14852a390bf3",
+            "weight": 100
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.saas_infra.kong_upstream.upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.saas_infra",
+      "mode": "managed",
+      "type": "kong_upstream",
+      "name": "upstream",
+      "provider": "provider[\"registry.terraform.io/greut/kong\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "hash_fallback": "none",
+            "hash_fallback_header": "",
+            "hash_on": "none",
+            "hash_on_cookie": "",
+            "hash_on_cookie_path": "/",
+            "hash_on_header": "",
+            "healthchecks": [
+              {
+                "active": [
+                  {
+                    "concurrency": 10,
+                    "healthy": [
+                      {
+                        "http_statuses": [
+                          200,
+                          302
+                        ],
+                        "interval": 0,
+                        "successes": 0
+                      }
+                    ],
+                    "http_path": "/",
+                    "https_sni": "",
+                    "https_verify_certificate": true,
+                    "timeout": 1,
+                    "type": "http",
+                    "unhealthy": [
+                      {
+                        "http_failures": 0,
+                        "http_statuses": [
+                          429,
+                          404,
+                          500,
+                          501,
+                          502,
+                          503,
+                          504,
+                          505
+                        ],
+                        "interval": 0,
+                        "tcp_failures": 0,
+                        "timeouts": 0
+                      }
+                    ]
+                  }
+                ],
+                "passive": [
+                  {
+                    "healthy": [
+                      {
+                        "http_statuses": [
+                          200,
+                          201,
+                          202,
+                          203,
+                          204,
+                          205,
+                          206,
+                          207,
+                          208,
+                          226,
+                          300,
+                          301,
+                          302,
+                          303,
+                          304,
+                          305,
+                          306,
+                          307,
+                          308
+                        ],
+                        "successes": 0
+                      }
+                    ],
+                    "type": "http",
+                    "unhealthy": [
+                      {
+                        "http_failures": 0,
+                        "http_statuses": [
+                          429,
+                          500,
+                          503
+                        ],
+                        "tcp_failures": 0,
+                        "timeouts": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "id": "895e4f7c-3b82-4ca9-81d3-14852a390bf3",
+            "name": "TF_ws_name_from_local_0",
+            "slots": 10000
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ]
+}

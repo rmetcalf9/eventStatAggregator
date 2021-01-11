@@ -4,10 +4,14 @@ variable "ws_name" {
   description = "Name of webservice"
 }
 
-variable "major_version" {
-  description = "Major version used in endpoints"
-}
-
-variable "version_underscore" {
-  description = "version with underscores e.g. 0_0_123"
+variable "deployment_config" {
+  description = "Describes the current test and main versions for each major version"
+  type = object({
+    major_versions = map(
+      object({
+        main_version = string,
+        test_version = string
+      })
+    )
+  })
 }

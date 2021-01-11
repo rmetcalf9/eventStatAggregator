@@ -8,26 +8,24 @@ echo "Start of ${0} - Used to test terraform locally"
 
 
 WS_NAME="ws_name_from_local"
-WS_MAJOR_VERSION="0"
-WS_VERSION_UNDERSCORE="0_1_23"
 TF_STATE_BASE="./state"
 KONG_ADMIN_URI="http://kong:8001"
 
-if [[ ! -d ${TF_STATE_BASE}/${WS_NAME}/${WS_MAJOR_VERSION} ]]; then
-  mkdir -p ${TF_STATE_BASE}/${WS_NAME}/${WS_MAJOR_VERSION}
+if [[ ! -d ${TF_STATE_BASE}/${WS_NAME} ]]; then
+  mkdir -p ${TF_STATE_BASE}/${WS_NAME}
 fi
 
-EXTRAPARAM=-state="${TF_STATE_BASE}/${WS_NAME}/${WS_MAJOR_VERSION}/terraform.tfstate"
+EXTRAPARAM="-state=\"${TF_STATE_BASE}/${WS_NAME}/terraform.tfstate\" -var-file=./local_deployment_config.tfvars.json"
 if [[ E${1} == "Einit" ]]; then
-  EXTRAPARAM="-backend-config path=${TF_STATE_BASE}/${WS_NAME}/${WS_MAJOR_VERSION}"
+  EXTRAPARAM="-backend-config path=${TF_STATE_BASE}/${WS_NAME}"
 fi
+
+echo "About to run terraform with params $@ ${EXTRAPARAM}"
 
 docker run --rm -it -v $(pwd):/curdir/ \
   --workdir=/curdir \
   --network=main_net \
   -e TF_VAR_ws_name="${WS_NAME}" \
-  -e TF_VAR_major_version="${WS_MAJOR_VERSION}" \
-  -e TF_VAR_version_underscore="${WS_VERSION_UNDERSCORE}" \
   -e TF_VAR_kong_admin_uri="${KONG_ADMIN_URI}" \
   hashicorp/terraform:0.14.4 $@ ${EXTRAPARAM}
 

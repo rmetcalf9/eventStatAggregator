@@ -1,12 +1,11 @@
 # Saas infrastructure module
 
-resource "kong_upstream" "upstream" {
-  name                 = format("TF_%s_%s", var.ws_name, var.major_version)
-  slots                = 	10000
-}
+module "saas_infra" {
+  source  = "./major_version"
 
-resource "kong_target" "target" {
-    target  		= format("tasks.%s_%s:80", var.ws_name, var.version_underscore)
-    weight 	  	= 100
-    upstream_id = kong_upstream.upstream.id
+  for_each = var.deployment_config.major_versions
+
+  ws_name = var.ws_name
+  major_version = each.key
+  major_version_deployment_config = each.value
 }
