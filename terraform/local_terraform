@@ -15,7 +15,7 @@ if [[ ! -d ${TF_STATE_BASE}/${WS_NAME} ]]; then
   mkdir -p ${TF_STATE_BASE}/${WS_NAME}
 fi
 
-EXTRAPARAM="-state=\"${TF_STATE_BASE}/${WS_NAME}/terraform.tfstate\" -var-file=./local_deployment_config.tfvars.json
+EXTRAPARAM="-state=${TF_STATE_BASE}/${WS_NAME}/terraform.tfstate -var-file=./local_deployment_config.tfvars.json"
 if [[ E${1} == "Einit" ]]; then
   EXTRAPARAM="-backend-config path=${TF_STATE_BASE}/${WS_NAME}"
 fi

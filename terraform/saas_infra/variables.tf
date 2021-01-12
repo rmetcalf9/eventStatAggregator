@@ -15,3 +15,27 @@ variable "deployment_config" {
     )
   })
 }
+
+variable "include_test_public" {
+  description = "Should the main public endpoint be included"
+  type = bool
+  default = true
+}
+
+variable "include_test_private" {
+  description = "Should the main public endpoint be included"
+  type = bool
+  default = true
+}
+
+variable "include_main_public" {
+  description = "Should the main public endpoint be included"
+  type = bool
+  default = true
+}
+
+variable "include_main_private" {
+  description = "Should the main public endpoint be included"
+  type = bool
+  default = true
+}

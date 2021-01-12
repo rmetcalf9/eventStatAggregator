@@ -8,4 +8,9 @@ module "saas_infra" {
   ws_name = var.ws_name
   major_version = each.key
   major_version_deployment_config = each.value
+
+  include_test_public = var.include_test_public
+  include_test_private = var.include_test_private
+  include_main_public = var.include_main_public
+  include_main_private = var.include_main_private
 }
