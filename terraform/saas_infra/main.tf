@@ -13,4 +13,6 @@ module "saas_infra" {
   include_test_private = var.include_test_private
   include_main_public = var.include_main_public
   include_main_private = var.include_main_private
+  secure_test_private = var.secure_test_private
+  secure_main_private = var.secure_main_private
 }

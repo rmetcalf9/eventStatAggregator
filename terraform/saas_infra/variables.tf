@@ -17,13 +17,13 @@ variable "deployment_config" {
 }
 
 variable "include_test_public" {
-  description = "Should the main public endpoint be included"
+  description = "Should the test public endpoint be included"
   type = bool
   default = true
 }
 
 variable "include_test_private" {
-  description = "Should the main public endpoint be included"
+  description = "Should the test private endpoint be included"
   type = bool
   default = true
 }
@@ -35,7 +35,19 @@ variable "include_main_public" {
 }
 
 variable "include_main_private" {
-  description = "Should the main public endpoint be included"
+  description = "Should the main private endpoint be included"
+  type = bool
+  default = true
+}
+
+variable "secure_test_private" {
+  description = "Should the test public endpoint be secured with JWT and ACL"
+  type = bool
+  default = true
+}
+
+variable "secure_main_private" {
+  description = "Should the main public endpoint be secured with JWT and ACL"
   type = bool
   default = true
 }

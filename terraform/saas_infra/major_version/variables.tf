@@ -37,3 +37,16 @@ variable "include_main_private" {
   type = bool
   default = true
 }
+
+variable "secure_test_private" {
+  description = "Should the test public endpoint be secured with JWT and ACL"
+  type = bool
+  default = true
+}
+
+variable "secure_main_private" {
+  description = "Should the main public endpoint be secured with JWT and ACL"
+  type = bool
+  default = true
+}
+
