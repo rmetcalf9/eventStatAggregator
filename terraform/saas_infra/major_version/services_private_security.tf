@@ -19,6 +19,7 @@ resource "kong_plugin" "service_test_private_jwt" {
   service_id = kong_service.service_test_private[0].id
 	config_json = <<EOT
 	{
+    "secret_is_base64": true,
 		"uri_param_names": [ "jwt" ],
     "key_claim_name": "kong_iss",
     "header_names": [
@@ -53,6 +54,7 @@ resource "kong_plugin" "service_private_jwt" {
   service_id = kong_service.service_private[0].id
 	config_json = <<EOT
 	{
+		"secret_is_base64": true,
 		"uri_param_names": [ "jwt" ],
     "key_claim_name": "kong_iss",
     "header_names": [
