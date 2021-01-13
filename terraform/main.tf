@@ -10,7 +10,7 @@ module "saas_infra" {
   # include_test_private = false
   # include_main_public = false
   # include_main_private = false
-  secure_test_private = true
-  secure_main_private = true
+  # secure_test_private = false
+  # secure_main_private = false
 }
 
