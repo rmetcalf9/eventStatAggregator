@@ -1,6 +1,7 @@
 # config.tf
 
 terraform {
+  backend "local" {},
   required_providers {
     kong = {
       source = "greut/kong"
