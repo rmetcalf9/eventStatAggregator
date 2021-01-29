@@ -54,7 +54,7 @@ resource "kong_plugin" "service_test_private_saas_jwt" {
     "cookie_names": [
       "jwt-auth-cookie"
     ],
-		"tenant_path_position": 4,
+		"tenant_path_position": 7,
 		"tenant_role_whitelist": ${jsonencode(var.private_allow_tenant_role_whitelist)}
 	}
 EOT
@@ -114,7 +114,7 @@ resource "kong_plugin" "service_private_saas_jwt" {
     "cookie_names": [
       "jwt-auth-cookie"
     ],
-		"tenant_path_position": 4,
+		"tenant_path_position": 7,
 		"tenant_role_whitelist": ${jsonencode(var.private_allow_tenant_role_whitelist)}
 	}
 EOT
