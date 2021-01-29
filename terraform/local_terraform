@@ -17,7 +17,7 @@ fi
 
 EXTRAPARAM="-state=${TF_STATE_BASE}/${WS_NAME}/terraform.tfstate -var-file=./local_deployment_config.tfvars.json"
 if [[ E${1} == "Einit" ]]; then
-  EXTRAPARAM="-backend-config path=${TF_STATE_BASE}/${WS_NAME}"
+  EXTRAPARAM="-backend-config path=${TF_STATE_BASE}/${WS_NAME}/terraform.tfstate"
 fi
 
 echo "About to run terraform with params $@ ${EXTRAPARAM}"

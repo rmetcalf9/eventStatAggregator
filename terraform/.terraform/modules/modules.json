@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"saas_infra.saas_infra","Source":"./major_version","Dir":"saas_infra/major_version"},{"Key":"","Source":"","Dir":"."},{"Key":"saas_infra","Source":"./saas_infra","Dir":"saas_infra"}]}
+{"Modules":[{"Key":"saas_infra","Source":"./saas_infra","Dir":"saas_infra"},{"Key":"saas_infra.saas_infra","Source":"./major_version","Dir":"saas_infra/major_version"},{"Key":"","Source":"","Dir":"."}]}

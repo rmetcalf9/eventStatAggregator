@@ -115,7 +115,7 @@ steps:
         - SPLIT_CHAR=${{SPLIT_CHAR}}
 
   transfer_deployment:
-    title: "Transferring terraform files to memset..."
+    title: "Run terraform on memset..."
     description: Compile the frontend quasar application
     image: ${{RJM_DOCKERWSCALLER_IMAGE}}
     working_directory: ${{main_clone}}
