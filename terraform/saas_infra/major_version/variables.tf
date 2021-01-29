@@ -50,3 +50,8 @@ variable "secure_main_private" {
   default = true
 }
 
+variable "private_allow_tenant_role_whitelist" {
+  description = "List of tenant and roles required to access private endpoint (Default is no restriction)"
+  type    = list(string)
+  default = []
+}

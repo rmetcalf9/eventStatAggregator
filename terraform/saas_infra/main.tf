@@ -15,4 +15,5 @@ module "saas_infra" {
   include_main_private = var.include_main_private
   secure_test_private = var.secure_test_private
   secure_main_private = var.secure_main_private
+  private_allow_tenant_role_whitelist = var.private_allow_tenant_role_whitelist
 }
