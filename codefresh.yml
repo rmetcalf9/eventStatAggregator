@@ -22,7 +22,7 @@ steps:
       - export RJM_DOCKER_SERVICE_NAME=${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
       - export RJM_DOCKER_SERVICE_URL=tasks.${RJM_WS_NAME}_${RJM_VERSION_UNDERSCORE}
       - export RJM_KONG_UPSTREAM_NAME=${RJM_WS_NAME}_${RJM_MAJOR_VERSION}
-      - export RJM_DOCKERWSCALLER_IMAGE="metcarob/docker-ws-caller:0.7.16"
+      - export RJM_DOCKERWSCALLER_IMAGE="metcarob/docker-ws-caller:0.7.17"
       - export RJM_BUILDQUASARAPP_IMAGE="metcarob/docker-build-quasar-app:0.0.12"
       - export RJM_UNITTESTAPICONTIANER_IMAGE="metcarob/python_unittest_api_container:0.0.9"
       - export RJM_DOCKER_KONG_API_URL="http://tasks.kong:8001"
