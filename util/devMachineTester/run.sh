@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export APIAPP_MQCLIENTCONFIG="{ \"Type\": \"Stomp\", \"ConnectionString\": \"stomp://127.0.0.1:61613\", \"Username\": \"admin\", \"Password\": \"admin\" }"
+export APIAPP_MQCLIENTCONFIG="{ \"Type\": \"Stomp\", \"ConnectionString\": \"stomp://127.0.0.1:61613\", \"Username\": \"eventStatMsgProc\", \"Password\": \"eventStatMsgProcPass\" }"
 
 python3 ./main.py
 RES=$?
