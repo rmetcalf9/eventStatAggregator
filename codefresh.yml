@@ -84,6 +84,7 @@ steps:
           -e APIAPP_APIDOCSURL=https://api.metcarob.com/eventStatAggregator/v${{RJM_MAJOR_VERSION}}/public/web/apidocs
           -e APIAPP_FRONTENDURL=https://api.metcarob.com/eventStatAggregator/v${{RJM_MAJOR_VERSION}}/public/web/frontend
           -e APIAPP_COMMON_ACCESSCONTROLALLOWORIGIN="https://api.metcarob.com,https://linkthethings.com,https://challengeswipe.com"
+          -e APIAPP_OBJECTSTOREDETAILLOGGING=Y
           --secret eventStatAggregator_objectstore_config
           -e APIAPP_OBJECTSTORECONFIGFILE=/run/secrets/eventStatAggregator_objectstore_config
           metcarob/${RJM_WS_NAME}:${RJM_VERSION}
