@@ -1,10 +1,10 @@
 flask==1.0.2
 flask_restplus==0.11.0
-werkzeug==0.15.4
+werkzeug==0.15.5
 pytz==2019.3
 sortedcontainers==1.5.9
-baseapp_for_restapi_backend_with_swagger==0.5.19
-mq-client-abstraction==0.0.52
+baseapp_for_restapi_backend_with_swagger==0.5.22
+mq-client-abstraction==0.0.53
 pyjwt==1.7.1
 
 sqlalchemy==1.3.1
