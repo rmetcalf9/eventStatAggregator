@@ -1,4 +1,4 @@
-FROM metcarob/saas_linkvis_connectors_prebuild:0.0.4
+FROM metcarob/saas_linkvis_connectors_prebuild:0.0.5
 
 #docker file for saas_linkvis microservice
 # I have built this as a single container microservice to ease versioning
