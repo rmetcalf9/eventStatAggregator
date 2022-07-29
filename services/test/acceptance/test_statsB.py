@@ -1,6 +1,6 @@
 # simple test to make sure baseapp is properly configured
 
-import TestHelperSuperClass
+import TestHelperSuperClassAcceptance
 import python_Testing_Utilities
 import json
 import TestingHelper
@@ -9,9 +9,9 @@ import pytz
 from appObj import appObj
 
 
-class helpers(TestHelperSuperClass.testClassWithHelpers):
+class helpers(TestHelperSuperClassAcceptance.testClassWithHelpers):
   def _getEnvironment(self):
-    return TestHelperSuperClass.env
+    return TestHelperSuperClassAcceptance.env
 
   def getStatsB(self, tenant, name, subname, start, end, msg="", checkAndParseResponse=True):
     startUse = start

@@ -12,10 +12,6 @@ import TestingHelper
 
 import logging
 
-from nose.plugins.attrib import attr
-def wipd(f):
-    return attr('wip')(f)
-
 import python_Testing_Utilities
 
 

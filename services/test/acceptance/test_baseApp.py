@@ -1,12 +1,12 @@
 # simple test to make sure baseapp is properly configured
 
-import TestHelperSuperClass
+import TestHelperSuperClassAcceptance
 import python_Testing_Utilities
 import json
 
-class helpers(TestHelperSuperClass.testClassWithHelpers):
+class helpers(TestHelperSuperClassAcceptance.testClassWithHelpers):
   def _getEnvironment(self):
-    return TestHelperSuperClass.env
+    return TestHelperSuperClassAcceptance.env
 
 class test_adminapi(helpers):
   def test_infoEndpoint(self):
@@ -24,7 +24,7 @@ class test_adminapi(helpers):
       'Server': {
         'APIAPP_APIDOCSURL': '_',
         'Version': 'TEST-3.3.3',
-        'APIAPP_FRONTENDURL': TestHelperSuperClass.env['APIAPP_FRONTENDURL']
+        'APIAPP_FRONTENDURL': TestHelperSuperClassAcceptance.env['APIAPP_FRONTENDURL']
       },
       'Derived': None
     }

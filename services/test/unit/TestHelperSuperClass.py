@@ -4,10 +4,6 @@ import pytz
 import datetime
 import TestingHelper
 
-from nose.plugins.attrib import attr
-def wipd(f):
-  return attr('wip')(f)
-
 testQueue001 = '/queue/testQueue'
 def getQueueEnvString(qname):
   return "{\"tenant\":\"" + TestingHelper.testingTenant + "\", \"name\":\"" + testQueue001 + "\"}"

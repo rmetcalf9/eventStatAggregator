@@ -1,5 +1,5 @@
 from flask import request
-from flask_restplus import Resource, fields, marshal
+from flask_restx import Resource, fields, marshal
 from werkzeug.exceptions import BadRequest, Conflict, InternalServerError, NotFound, Forbidden
 import Logic
 from dateutil.parser import parse
